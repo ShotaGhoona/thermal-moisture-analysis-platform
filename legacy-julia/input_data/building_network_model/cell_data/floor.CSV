@@ -1,0 +1,12 @@
+セル番号,セル幅,質点までの距離,材料名称,温度,相対湿度,含水率,水分化学ポテンシャル
+-,-,-,-,℃,%,kg/kg,J/kg
+i,dx,dx2,material_name,temp,rh,phi,miu
+1,0.01,0,extruded_polystyrene,10,60,,
+2,0.01,0.005,extruded_polystyrene,10,60,,
+3,0.01,0.005,extruded_polystyrene,10,60,,
+4,0.01,0.005,extruded_polystyrene,10,60,,
+5,0.01,0.005,extruded_polystyrene,10,60,,
+6,0.002,0.001,structural_plywood,10,60,,
+7,0.0025,0.00125,structural_plywood,10,60,,
+8,0.0025,0.00125,structural_plywood,10,60,,
+9,0.002,0.002,structural_plywood,10,60,,

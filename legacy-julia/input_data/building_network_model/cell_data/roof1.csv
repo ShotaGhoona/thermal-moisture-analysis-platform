@@ -1,0 +1,6 @@
+セル番号,セル幅,質点までの距離,材料名称,温度,相対湿度,含水率,水分化学ポテンシャル
+-,-,-,-,℃,%,kg/kg,J/kg
+i,dx,dx2,material_name,temp,rh,phi,miu
+1,0.002,0,metal_plate,10,56,,
+2,0.002,0.001,extruded_polystyrene,10,56,,
+3,0.002,0.002,extruded_polystyrene,10,56,,
