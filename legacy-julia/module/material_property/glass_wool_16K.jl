@@ -41,6 +41,7 @@ rh_TH = [ 0.8357 ]
 
 
 function get_phi( ;rh::Float64 )
+    local phi
     if rh < rh_TH[1]
         phi = ( a[1] * ( b[1] / ( rh + c[1] ) + d[1] ) )
     elseif rh >= rh_TH[1] && rh <= 0.99 #0.999
@@ -49,6 +50,8 @@ function get_phi( ;rh::Float64 )
     # 結露判定用
     elseif rh > 0.99
         phi = -1.9777924016366822e6 * rh^3 + 5.903710318859591e6 * rh^2 -5.874043432809136e6 * rh + 1.9481265055862272e6
+    else
+        phi = 0.0  # デフォルト値
     end
     return phi
 end
@@ -59,6 +62,7 @@ get_phi( cell ) = get_phi( rh = convertMiu2RH( temp = cell.temp, miu = cell.miu 
 drh_dmiu( temp::Float64, miu::Float64 ) = ( 1.0 / Rv / temp ) * exp( miu / Rv / temp )
 # dphi/dmiu = dphi/drh * drh/dmiu
 function get_dphi( ;temp::Float64, miu::Float64 )
+    local dphi_drh
     rh = convertMiu2RH( temp = temp, miu = miu )
     if rh < rh_TH[1]
         dphi_drh = - ( a[1] * ( b[1] / (( rh + c[1] )^2) ) )
@@ -68,6 +72,8 @@ function get_dphi( ;temp::Float64, miu::Float64 )
     #elseif rh >= 0.999
     elseif rh > 0.99
         dphi_drh = - 3.0 * 1.9777924016366822e6 * rh^2 + 2.0 * 5.903710318859591e6 * rh - 5.874043432809136e6
+    else
+        dphi_drh = 0.0  # デフォルト値
     end
     return dphi_drh * drh_dmiu( temp, miu )
 end

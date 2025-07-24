@@ -40,10 +40,13 @@ d = [ 0.00847648, 0.0060673 ]
 rh_TH = [ 0.7368 ]
 
 function get_phi( ;rh::Float64 )
+    local phi
     if rh < rh_TH[1]
         phi = ( a[1] * ( b[1] / ( rh + c[1] ) + d[1] ) )
     elseif rh >= rh_TH[1]
         phi = ( a[2] * ( b[2] / ( rh + c[2] ) + d[2] ) )
+    else
+        phi = 0.0  # デフォルト値
     end
     return phi
 end
@@ -54,10 +57,13 @@ get_phi( cell ) = get_phi( rh = convertMiu2RH( temp = cell.temp, miu = cell.miu 
 drh_dmiu( temp::Float64, miu::Float64 ) = - ( 1.0 / Rv / temp ) * exp( miu / Rv / temp )
 # dphi/dmiu = dphi/drh * drh/dmiu
 function get_dphi( ;temp::Float64, miu::Float64, rh::Float64 )
+    local dphi_drh
     if rh < rh_TH[1]
         dphi_drh = ( a[1] * ( b[1] / (( rh + c[1] )^2) ) )
     elseif rh >= rh_TH[1]
         dphi_drh = ( a[2] * ( b[2] / (( rh + c[2] )^2) ) )
+    else
+        dphi_drh = 0.0  # デフォルト値
     end
     return dphi_drh * drh_dmiu( temp, miu )
 end
