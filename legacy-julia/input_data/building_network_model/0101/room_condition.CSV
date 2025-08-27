@@ -1,0 +1,12 @@
+室番号,名称,容積,温度,湿度,床高さ,発熱量,発湿量,"エアコンの有無(OFF：なし, あり：ON）"
+-,-,m3,℃,%,m,W,kg/s,-
+num,name,vol,temp,rh,Hight,Qs,Js,AC
+1,outdoor,1000,10,70,0,0,0,OFF
+2,storage room,646.2,10,56,0.01,0,0,OFF
+3,special storage room,112.1,10,56,0.02,0,0,OFF
+4,machine room,64.1,10,56,0.025,0,0,OFF
+5,vestibule,57.9,10,56,,0,0,OFF
+6,doublewallA,67.1,10,56,,0,0,OFF
+7,doublewallB,100.5,10,56,,0,0,OFF
+8,attic,45.8,10,56,,0,0,OFF
+9,underfloor,166.9,10,56,,0,0,OFF
