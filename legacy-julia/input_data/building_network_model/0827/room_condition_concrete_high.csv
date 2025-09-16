@@ -1,0 +1,5 @@
+室番号,室名,容積,温度,湿度,高さ,顕熱,水分,エアコンの有無(OFF：なし, その他：ON)
+-,-,m3,℃,%,m,W,kg/s,-
+num,name,vol,temp,rh,Hight,Qs,Js,AC
+1,outdoor,1000,20,60,0,0,0,OFF
+2,indoor,20,25,50,3.0,0,0,OFF
