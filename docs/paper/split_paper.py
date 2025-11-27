@@ -104,18 +104,18 @@ def build_folder_structure(parsed_data: dict, version_prefix: str = "v1") -> dic
     フォルダ番号体系:
     - 見出し1 (# ): 100, 200, 300, ...
     - 見出し2 (## ): 110, 120, 130, ... (親+10, +20, ...)
-    - 見出し3 (###): ファイルとして保存（番号なし）
+    - 見出し3 (###): 111, 112, 113, ... (親+1, +2, ...)
     """
     sections = parsed_data['sections']
     structure = {
         'preamble': parsed_data['preamble'],
         'folders': [],
-        'files': []  # 直下に置くファイル
     }
 
     # 見出し1のカウンター
     h1_counter = 0
     h2_counter = 0
+    h3_counter = 0
 
     current_h1 = None
     current_h2 = None
@@ -127,6 +127,7 @@ def build_folder_structure(parsed_data: dict, version_prefix: str = "v1") -> dic
         if level == 1:
             h1_counter += 1
             h2_counter = 0
+            h3_counter = 0
 
             folder_num = h1_counter * 100
             folder_name = f"{folder_num}-{title}"
@@ -135,7 +136,6 @@ def build_folder_structure(parsed_data: dict, version_prefix: str = "v1") -> dic
                 'name': folder_name,
                 'number': folder_num,
                 'subfolders': [],
-                'files': [],
                 'title': section['title'],
                 'content': section['content']
             }
@@ -144,6 +144,7 @@ def build_folder_structure(parsed_data: dict, version_prefix: str = "v1") -> dic
 
         elif level == 2:
             h2_counter += 1
+            h3_counter = 0
 
             if current_h1:
                 folder_num = current_h1['number'] + h2_counter * 10
@@ -152,7 +153,7 @@ def build_folder_structure(parsed_data: dict, version_prefix: str = "v1") -> dic
                 current_h2 = {
                     'name': folder_name,
                     'number': folder_num,
-                    'files': [],
+                    'subfolders': [],  # h3用
                     'title': section['title'],
                     'content': section['content']
                 }
@@ -166,28 +167,37 @@ def build_folder_structure(parsed_data: dict, version_prefix: str = "v1") -> dic
                 current_h2 = {
                     'name': folder_name,
                     'number': folder_num,
-                    'files': [],
+                    'subfolders': [],
                     'title': section['title'],
                     'content': section['content']
                 }
                 structure['folders'].append(current_h2)
 
         elif level == 3:
-            # ファイル名: v1-タイトル.md （番号なし）
-            file_name = f"{version_prefix}-{title}.md"
+            h3_counter += 1
 
             if current_h2:
-                current_h2['files'].append({
-                    'name': file_name,
+                folder_num = current_h2['number'] + h3_counter
+                folder_name = f"{folder_num}-{title}"
+
+                h3_folder = {
+                    'name': folder_name,
+                    'number': folder_num,
                     'title': section['title'],
                     'content': section['content']
-                })
+                }
+                current_h2['subfolders'].append(h3_folder)
             elif current_h1:
-                current_h1['files'].append({
-                    'name': file_name,
+                folder_num = current_h1['number'] + h3_counter
+                folder_name = f"{folder_num}-{title}"
+
+                h3_folder = {
+                    'name': folder_name,
+                    'number': folder_num,
                     'title': section['title'],
                     'content': section['content']
-                })
+                }
+                current_h1['subfolders'].append(h3_folder)
 
         elif level >= 4:
             # 見出し4以降は見出し3のコンテンツに含める
@@ -221,12 +231,6 @@ def write_structure_to_disk(structure: dict, output_dir: Path, version_prefix: s
         h1_path = output_dir / h1_folder['name']
         created_items.append(('dir', h1_path, None))
 
-        # h1直下のファイル（h3がh2なしで来た場合）
-        for file_info in h1_folder.get('files', []):
-            file_path = h1_path / file_info['name']
-            content = create_file_content(file_info['title'], file_info['content'], level=3)
-            created_items.append(('file', file_path, content))
-
         # h2サブフォルダ
         for h2_folder in h1_folder.get('subfolders', []):
             h2_path = h1_path / h2_folder['name']
@@ -238,11 +242,16 @@ def write_structure_to_disk(structure: dict, output_dir: Path, version_prefix: s
             content = create_file_content(h2_folder['title'], h2_folder.get('content', ''), level=2)
             created_items.append(('file', h2_content_path, content))
 
-            # h3ファイル
-            for file_info in h2_folder.get('files', []):
-                file_path = h2_path / file_info['name']
-                content = create_file_content(file_info['title'], file_info['content'], level=3)
-                created_items.append(('file', file_path, content))
+            # h3フォルダ
+            for h3_folder in h2_folder.get('subfolders', []):
+                h3_path = h2_path / h3_folder['name']
+                created_items.append(('dir', h3_path, None))
+
+                # h3の本文ファイル（内容が空でも作成）
+                h3_title = sanitize_name(h3_folder['title'])
+                h3_content_path = h3_path / f"{version_prefix}-{h3_title}.md"
+                content = create_file_content(h3_folder['title'], h3_folder.get('content', ''), level=3)
+                created_items.append(('file', h3_content_path, content))
 
     # 実行
     if dry_run:
