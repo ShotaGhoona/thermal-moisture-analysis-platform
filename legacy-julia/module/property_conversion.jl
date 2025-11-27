@@ -32,6 +32,7 @@ include(string("./material_property/concrete_goran.jl"))
 include(string("./material_property/metal_plate.jl"))
 include(string("./material_property/paper.jl"))
 include(string("./material_property/ALC.jl"))
+include(string("./material_property/paper_washi.jl"))
 
 # 辞書の登録
 prop_list["bentheimer_sandstone"] = bentheimer_sandstone
@@ -61,6 +62,7 @@ prop_list["concrete_goran"] = concrete_goran
 prop_list["metal_plate"] = metal_plate
 prop_list["paper"] = paper
 prop_list["ALC"] = ALC
+prop_list["paper_washi"] = paper_washi
 
 #####################################################
 const grav = 9.806650
