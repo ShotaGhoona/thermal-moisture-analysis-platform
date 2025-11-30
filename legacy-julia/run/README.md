@@ -4,15 +4,81 @@
 
 このディレクトリには、建物ネットワークモデル（BNM: Building Network Model）による熱水分同時移動解析の実行ファイルが格納されています。
 
+## 実行ファイル
+
+| ファイル | 用途 |
+|----------|------|
+| `main.jl` | 単一パターン実行（設定をコード内で指定） |
+| `main-all.jl` | 全75パターン一括実行（推奨） |
+| `logger.jl` | ログ出力モジュール |
+
 ## 実行方法
 
-```bash
-# thermal-analysis ディレクトリから
-julia legacy-julia/run/main.jl
+### 単一パターン実行
 
+```bash
 # legacy-julia ディレクトリから
 julia run/main.jl
 ```
+
+### 全パターン一括実行（推奨）
+
+```bash
+# legacy-julia ディレクトリから
+julia run/main-all.jl
+```
+
+5(壁体) × 5(換気) × 3(気候) = **75パターン**を自動実行します。
+
+#### パターン構成
+
+| カテゴリ | パターン | 説明 |
+|---------|---------|------|
+| **壁体** | w01-base | RC単体 |
+| | w02-inner | RC内断熱 |
+| | w03-outer | RC外断熱 |
+| | w04-hygro | RC内断熱+調湿 |
+| | w05-mud | 土壁 |
+| **換気** | o01-base | 基準換気 |
+| | o02-low | 低換気 |
+| | o03-high | 高換気 |
+| | o04-none | 無換気 |
+| | o05-storage | 蔵換気 |
+| **気候** | kyoto | 京都 |
+| | okinawa | 沖縄 |
+| | sapporo | 札幌 |
+
+#### 出力構造
+
+```
+output_data/batch_all/
+├── _progress.txt       # 進捗状況（リアルタイム更新）
+├── _batch_log.txt      # 実行ログ
+├── _summary.csv        # 全パターン結果一覧
+├── _completed.txt      # 完了済みリスト（再開用）
+│
+├── w01-base_o01-base_kyoto/
+│   ├── settings.txt
+│   ├── result_all_rooms.csv
+│   ├── result_wall1.csv
+│   └── result_room_analysis1.csv
+│
+├── w01-base_o01-base_okinawa/
+│   └── ...
+└── ...（75フォルダ）
+```
+
+#### 機能
+
+- **進捗確認**: `_progress.txt` をリアルタイムで確認可能
+- **再開機能**: 中断後に再実行すると、完了済みパターンをスキップ
+- **エラー継続**: 1パターンが失敗しても残りを継続実行
+- **結果一覧**: `_summary.csv` で全パターンの成功/失敗を確認
+
+#### 実行時間目安
+
+- 1パターン: 約30分（6ヶ月分, dt=0.1h）
+- 全75パターン: 約37時間（マシン性能により変動）
 
 ## 計算の物理的背景
 
@@ -168,7 +234,7 @@ jl  : 液水流束 [kg/(m²·s)]
 | `INPUT_ROOM` | 室条件CSV（容積、初期温湿度など） |
 | `INPUT_WALL` | 壁条件CSV（構成、面積、熱伝達率など） |
 | `INPUT_OPENING` | 開口条件CSV（換気量など） |
-| `INPUT_CLIMATE` | 気象データCSV（外気温、湿度など） |
+| `INPUT_CLIMATE` | 気象データCSV（外気温、湿度など）<br>京都/沖縄/札幌から選択可 |
 
 ### 計算条件
 
@@ -234,6 +300,16 @@ const CASE_NAME = "case_high_ventilation"
 1. **時間刻み**: `DT` が大きすぎると計算が不安定になる可能性があります
 2. **結露警告**: 壁体内部で結露が発生すると警告が表示されます
 3. **計算時間**: 6ヶ月分の計算には約30分程度かかります（dt=0.1h の場合）
+
+## 気象データ
+
+`input_data/building_network_model_production/climate-data/` に以下の気象データが利用可能：
+
+| ファイル | 都市 | 気温範囲 |
+|----------|------|----------|
+| `climate_data_kyoto.csv` | 京都 | -2〜35℃ |
+| `climate_data_okinawa.csv` | 沖縄 | 13〜31℃ |
+| `climate_data_sapporo.csv` | 札幌 | -14〜31℃ |
 
 ## 関連ファイル
 

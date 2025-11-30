@@ -21,12 +21,12 @@ const PROJECT_DIR = dirname(SCRIPT_DIR)  # legacy-julia/
 const INPUT_ROOM    = "input_data/building_network_model_production/01/room-condition/01-base-model.csv"
 const INPUT_WALL    = "input_data/building_network_model_production/01/wall-condition/01-base-model.csv"
 const INPUT_OPENING = "input_data/building_network_model_production/01/opening-condition/01-base-model.csv"
-const INPUT_CLIMATE = "input_data/climate_data/climate_data_nagoya.csv"
+const INPUT_CLIMATE = "input_data/building_network_model_production/climate-data/climate_data_kyoto.csv"
 
 # --- 計算条件 ---
 const DT = 0.1                                      # 時間刻み [hour]
-const START_DATE = DateTime(2022, 4, 1, 0, 0, 0)    # 計算開始時刻
-const END_DATE   = DateTime(2022, 10, 1, 0, 0, 0)   # 計算終了時刻（または下記で期間指定）
+const START_DATE = DateTime(2020, 4, 1, 0, 0, 0)    # 計算開始時刻
+const END_DATE   = DateTime(2020, 10, 1, 0, 0, 0)   # 計算終了時刻（または下記で期間指定）
 # const END_DATE = START_DATE + Month(6)            # 開始から6ヶ月後
 
 # --- 出力設定 ---
@@ -35,9 +35,9 @@ const OUTPUT_BASE_DIR = "output_data"               # 出力ベースディレ�
 const CASE_NAME = "case_production_01"              # ケース名（出力フォルダ名に使用）
 
 # --- 位置情報（日射計算用） ---
-const CITY = "Nagoya"
-const LON  = 136.906    # 経度
-const PHI  = 35.181     # 緯度
+const CITY = "Kyoto"
+const LON  = 135.768    # 経度
+const PHI  = 35.012     # 緯度
 const LONS = 135.0      # 地方標準時の地点の経度
 
 # --- 初期条件（オプション：設定しない場合はCSVの値を使用） ---
