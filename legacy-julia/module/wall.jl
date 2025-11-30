@@ -106,10 +106,25 @@ function input_wall_data(file_name::String, header::Int = 3)
         else
             data[i].name  = input_data.Type[i]
             cell_data = []
-            try 
-                cell_data = CSV.File( "./input_data/building_network_model/cell_data/"*string(input_data.Type[i])*".csv", header = 3) |> DataFrame
-            catch 
-                cell_data = CSV.File( "../input_data/building_network_model/cell_data/"*string(input_data.Type[i])*".csv", header = 3) |> DataFrame
+            # cell_dataの読み込み（複数のパスを順番に試行）
+            cell_data_paths = [
+                "./input_data/building_network_model_production/cell-data/"*string(input_data.Type[i])*".csv",
+                "../input_data/building_network_model_production/cell-data/"*string(input_data.Type[i])*".csv",
+                "./input_data/building_network_model/cell_data/"*string(input_data.Type[i])*".csv",
+                "../input_data/building_network_model/cell_data/"*string(input_data.Type[i])*".csv"
+            ]
+            cell_data_loaded = false
+            for path in cell_data_paths
+                try
+                    cell_data = CSV.File(path, header = 3) |> DataFrame
+                    cell_data_loaded = true
+                    break
+                catch
+                    continue
+                end
+            end
+            if !cell_data_loaded
+                error("cell_data file not found: "*string(input_data.Type[i])*".csv")
             end
             wall = [ Cell() for j = 1 : length(cell_data.i) ]
             for j = 1 : length(cell_data.i)
