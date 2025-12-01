@@ -1,0 +1,2 @@
+case_id,wall_id,wall_name,opening_id,opening_name,climate_id,climate_name,status,duration_sec,start_time,end_time,error_message
+w01-base_o01-base_kyoto,w01-base,RC単体,o01-base,基準換気,kyoto,京都,SUCCESS,104517.646,2025-11-30 17:15:37,2025-12-01 22:17:38,""
