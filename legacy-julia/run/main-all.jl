@@ -72,7 +72,7 @@ const ROOM_FILE = "01-base-model.csv"
                            計算条件
 =============================================================================#
 
-const DT = 1.0                                      # 時間刻み [hour]
+const DT = 0.1                                      # 時間刻み [hour]
 const START_DATE = DateTime(2020, 1, 1, 0, 0, 0)    # 計算開始時刻
 const END_DATE   = DateTime(2021, 1, 1, 0, 0, 0)    # 計算終了時刻（1年間）
 const OUTPUT_INTERVAL = 10.0                        # 出力間隔 [hour]
@@ -696,6 +696,7 @@ function cal_new_value_ver_network(network::BNM, dt)
 
     for i = 2:length(network.rooms)
         set_temp(network.rooms[i], cal_newtemp(network.rooms[i].air, dt))
+        
         set_rh(network.rooms[i], cal_newRH(network.rooms[i].air, dt))
     end
 end
