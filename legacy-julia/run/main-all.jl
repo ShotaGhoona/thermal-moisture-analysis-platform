@@ -8,14 +8,17 @@
 
 機能:
     - 5(wall) × 5(opening) × 3(climate) = 75パターンを自動実行
+    - 気候ごとにまとめて実行（京都→沖縄→札幌の順）
     - 進捗管理ファイルで状況確認可能
     - エラー発生時も続行し、後で確認可能
     - 中断後の再開機能（完了済みパターンはスキップ）
+    - ターミナル出力をログファイルに保存
 
 出力先:
-    output_data/batch_all/
+    output_data/batch_all/{MMDD}/
     ├── _progress.txt          # 進捗状況（人間可読）
     ├── _batch_log.txt         # 実行ログ
+    ├── _terminal_log.txt      # ターミナル出力
     ├── _summary.csv           # 全パターンの結果一覧
     ├── _completed.txt         # 完了済みパターンリスト（再開用）
     │
@@ -69,15 +72,16 @@ const ROOM_FILE = "01-base-model.csv"
                            計算条件
 =============================================================================#
 
-const DT = 0.1                                      # 時間刻み [hour]
-const START_DATE = DateTime(2020, 4, 1, 0, 0, 0)    # 計算開始時刻
-const END_DATE   = DateTime(2020, 10, 1, 0, 0, 0)   # 計算終了時刻
+const DT = 1.0                                      # 時間刻み [hour]
+const START_DATE = DateTime(2020, 1, 1, 0, 0, 0)    # 計算開始時刻
+const END_DATE   = DateTime(2021, 1, 1, 0, 0, 0)    # 計算終了時刻（1年間）
 const OUTPUT_INTERVAL = 10.0                        # 出力間隔 [hour]
 const LONS = 135.0                                  # 地方標準時の経度
 
 # 出力設定
 const OUTPUT_BASE_DIR = "output_data"
 const BATCH_DIR_NAME = "batch_all"
+const DATE_STAMP = Dates.format(now(), "mmdd")      # 実行日の月日（4桁）
 
 #=============================================================================
                            起動メッセージ
@@ -120,12 +124,49 @@ println("📦 モジュール読み込み完了!")
 println()
 
 #=============================================================================
+                           ターミナルログ機能
+=============================================================================#
+
+# グローバルなログファイル
+const TERMINAL_LOG = Ref{Union{IOStream, Nothing}}(nothing)
+
+"""ターミナルとファイルの両方に出力"""
+function tprint(args...)
+    print(args...)
+    if TERMINAL_LOG[] !== nothing
+        print(TERMINAL_LOG[], args...)
+    end
+end
+
+"""ターミナルとファイルの両方に出力（改行付き）"""
+function tprintln(args...)
+    println(args...)
+    if TERMINAL_LOG[] !== nothing
+        println(TERMINAL_LOG[], args...)
+        flush(TERMINAL_LOG[])
+    end
+end
+
+"""ターミナルログの初期化"""
+function setup_terminal_log(log_path::String)
+    TERMINAL_LOG[] = open(log_path, "w")
+end
+
+"""ターミナルログのクローズ"""
+function close_terminal_log()
+    if TERMINAL_LOG[] !== nothing
+        close(TERMINAL_LOG[])
+        TERMINAL_LOG[] = nothing
+    end
+end
+
+#=============================================================================
                            ユーティリティ関数
 =============================================================================#
 
-"""バッチディレクトリのパスを取得"""
+"""バッチディレクトリのパスを取得（日付フォルダ付き）"""
 function get_batch_dir()
-    return joinpath(PROJECT_DIR, OUTPUT_BASE_DIR, BATCH_DIR_NAME)
+    return joinpath(PROJECT_DIR, OUTPUT_BASE_DIR, BATCH_DIR_NAME, DATE_STAMP)
 end
 
 """ログファイルに書き込み"""
@@ -280,11 +321,11 @@ end
 function run_single_simulation(wall, opening, climate, output_dir::String, case_idx::Int, total::Int)
     case_id = "$(wall.id)_$(opening.id)_$(climate.id)"
 
-    println()
-    println("   🏗️  ──────────────────────────────────────────────────────────")
-    println("   🏗️   モデル構築開始")
-    println("   🏗️  ──────────────────────────────────────────────────────────")
-    println()
+    tprintln()
+    tprintln("   🏗️  ──────────────────────────────────────────────────────────")
+    tprintln("   🏗️   モデル構築開始")
+    tprintln("   🏗️  ──────────────────────────────────────────────────────────")
+    tprintln()
 
     # 入力ファイルパス
     input_room = joinpath("input_data", "building_network_model_production", "01", "room-condition", ROOM_FILE)
@@ -292,12 +333,12 @@ function run_single_simulation(wall, opening, climate, output_dir::String, case_
     input_opening = joinpath("input_data", "building_network_model_production", "01", "opening-condition", opening.file)
     input_climate = joinpath("input_data", "building_network_model_production", "climate-data", climate.file)
 
-    println("   📄 入力ファイル:")
-    println("      ├─ 🏠 Room:    $input_room")
-    println("      ├─ 🧱 Wall:    $input_wall")
-    println("      ├─ 🚪 Opening: $input_opening")
-    println("      └─ 🌤️  Climate: $input_climate")
-    println()
+    tprintln("   📄 入力ファイル:")
+    tprintln("      ├─ 🏠 Room:    $input_room")
+    tprintln("      ├─ 🧱 Wall:    $input_wall")
+    tprintln("      ├─ 🚪 Opening: $input_opening")
+    tprintln("      └─ 🌤️  Climate: $input_climate")
+    tprintln()
 
     # 設定ファイル保存
     settings_path = joinpath(output_dir, "settings.txt")
@@ -336,90 +377,90 @@ function run_single_simulation(wall, opening, climate, output_dir::String, case_
     end
 
     # BNMモデル作成
-    println("   🔧 BNMモデル作成中...")
-    println("      ├─ CSV読み込み...")
+    tprintln("   🔧 BNMモデル作成中...")
+    tprintln("      ├─ CSV読み込み...")
     network_model = create_BNM_model(
         file_name_rooms    = "./" * input_room,
         file_name_walls    = "./" * input_wall,
         file_name_openings = "./" * input_opening,
         file_name_climate  = "./" * input_climate
     )
-    println("      └─ ✅ BNMモデル作成完了")
-    println()
+    tprintln("      └─ ✅ BNMモデル作成完了")
+    tprintln()
 
     # モデル情報表示
-    println("   📊 モデル構成:")
-    println("      ├─ 🏠 Rooms: $(length(network_model.rooms)) 室")
+    tprintln("   📊 モデル構成:")
+    tprintln("      ├─ 🏠 Rooms: $(length(network_model.rooms)) 室")
     for i = 1:length(network_model.rooms)
         room = network_model.rooms[i]
         if i == length(network_model.rooms)
-            println("      │   └─ [$i] $(room.name)")
-            println("      │       ├─ 容積: $(room.air.vol) m³")
-            println("      │       ├─ 温度: $(round(room.air.temp - 273.15, digits=1)) ℃")
-            println("      │       └─ 湿度: $(round(room.air.rh * 100, digits=0)) %")
+            tprintln("      │   └─ [$i] $(room.name)")
+            tprintln("      │       ├─ 容積: $(room.air.vol) m³")
+            tprintln("      │       ├─ 温度: $(round(room.air.temp - 273.15, digits=1)) ℃")
+            tprintln("      │       └─ 湿度: $(round(room.air.rh * 100, digits=0)) %")
         else
-            println("      │   ├─ [$i] $(room.name)")
-            println("      │   │   ├─ 容積: $(room.air.vol) m³")
-            println("      │   │   ├─ 温度: $(round(room.air.temp - 273.15, digits=1)) ℃")
-            println("      │   │   └─ 湿度: $(round(room.air.rh * 100, digits=0)) %")
+            tprintln("      │   ├─ [$i] $(room.name)")
+            tprintln("      │   │   ├─ 容積: $(room.air.vol) m³")
+            tprintln("      │   │   ├─ 温度: $(round(room.air.temp - 273.15, digits=1)) ℃")
+            tprintln("      │   │   └─ 湿度: $(round(room.air.rh * 100, digits=0)) %")
         end
     end
-    println("      │")
-    println("      ├─ 🧱 Walls: $(length(network_model.walls)) 壁")
+    tprintln("      │")
+    tprintln("      ├─ 🧱 Walls: $(length(network_model.walls)) 壁")
     for i = 1:length(network_model.walls)
         wall_obj = network_model.walls[i]
         if i == length(network_model.walls)
-            println("      │   └─ [$i] $(wall_obj.name)")
-            println("      │       ├─ IP→IM: $(wall_obj.IP) → $(wall_obj.IM)")
-            println("      │       ├─ 面積: $(wall_obj.area) m²")
-            println("      │       └─ セル数: $(length(wall_obj.cell))")
+            tprintln("      │   └─ [$i] $(wall_obj.name)")
+            tprintln("      │       ├─ IP→IM: $(wall_obj.IP) → $(wall_obj.IM)")
+            tprintln("      │       ├─ 面積: $(wall_obj.area) m²")
+            tprintln("      │       └─ セル数: $(length(wall_obj.cell))")
         else
-            println("      │   ├─ [$i] $(wall_obj.name)")
-            println("      │   │   ├─ IP→IM: $(wall_obj.IP) → $(wall_obj.IM)")
-            println("      │   │   ├─ 面積: $(wall_obj.area) m²")
-            println("      │   │   └─ セル数: $(length(wall_obj.cell))")
+            tprintln("      │   ├─ [$i] $(wall_obj.name)")
+            tprintln("      │   │   ├─ IP→IM: $(wall_obj.IP) → $(wall_obj.IM)")
+            tprintln("      │   │   ├─ 面積: $(wall_obj.area) m²")
+            tprintln("      │   │   └─ セル数: $(length(wall_obj.cell))")
         end
     end
-    println("      │")
-    println("      └─ 🚪 Openings: $(length(network_model.openings)) 開口")
+    tprintln("      │")
+    tprintln("      └─ 🚪 Openings: $(length(network_model.openings)) 開口")
     for i = 1:length(network_model.openings)
         op = network_model.openings[i]
         if i == length(network_model.openings)
-            println("          └─ [$i] Type: $(op.Type)")
-            println("              ├─ IP→IM: $(op.IP) → $(op.IM)")
-            println("              ├─ Qup: $(op.Qup) m³/s")
-            println("              └─ Qdw: $(op.Qdw) m³/s")
+            tprintln("          └─ [$i] Type: $(op.Type)")
+            tprintln("              ├─ IP→IM: $(op.IP) → $(op.IM)")
+            tprintln("              ├─ Qup: $(op.Qup) m³/s")
+            tprintln("              └─ Qdw: $(op.Qdw) m³/s")
         else
-            println("          ├─ [$i] Type: $(op.Type)")
-            println("          │   ├─ IP→IM: $(op.IP) → $(op.IM)")
-            println("          │   ├─ Qup: $(op.Qup) m³/s")
-            println("          │   └─ Qdw: $(op.Qdw) m³/s")
+            tprintln("          ├─ [$i] Type: $(op.Type)")
+            tprintln("          │   ├─ IP→IM: $(op.IP) → $(op.IM)")
+            tprintln("          │   ├─ Qup: $(op.Qup) m³/s")
+            tprintln("          │   └─ Qdw: $(op.Qdw) m³/s")
         end
     end
-    println()
+    tprintln()
 
     # 位置情報設定
-    println("   📍 位置情報設定...")
+    tprintln("   📍 位置情報設定...")
     network_model.climate.location["city"] = climate.name
     network_model.climate.location["lon"]  = climate.lon
     network_model.climate.location["phi"]  = climate.phi
     network_model.climate.location["lons"] = LONS
-    println("      └─ ✅ 完了")
-    println()
+    tprintln("      └─ ✅ 完了")
+    tprintln()
 
     # 計算開始時刻設定
-    println("   ⏰ 計算時刻設定...")
+    tprintln("   ⏰ 計算時刻設定...")
     network_model.climate.date = START_DATE
-    println("      ├─ 開始時刻: $START_DATE")
+    tprintln("      ├─ 開始時刻: $START_DATE")
     reset_climate_data(network_model.climate)
-    println("      ├─ 気象データ初期化完了")
-    println("      │   ├─ 外気温: $(round(temp(network_model.climate) - 273.15, digits=1)) ℃")
-    println("      │   └─ 外気湿度: $(round(rh(network_model.climate) * 100, digits=0)) %")
-    println("      └─ ✅ 完了")
-    println()
+    tprintln("      ├─ 気象データ初期化完了")
+    tprintln("      │   ├─ 外気温: $(round(temp(network_model.climate) - 273.15, digits=1)) ℃")
+    tprintln("      │   └─ 外気湿度: $(round(rh(network_model.climate) * 100, digits=0)) %")
+    tprintln("      └─ ✅ 完了")
+    tprintln()
 
     # ロガー設定
-    println("   📝 ロガー設定...")
+    tprintln("   📝 ロガー設定...")
     relative_output = replace(output_dir, joinpath(PROJECT_DIR, "output_data") * "/" => "")
 
     logger_rooms = set_logger(
@@ -428,7 +469,7 @@ function run_single_simulation(wall, opening, climate, output_dir::String, case_
         ["temp", "rh", "ah"],
         network_model.rooms
     )
-    println("      ├─ result_all_rooms ✅")
+    tprintln("      ├─ result_all_rooms ✅")
 
     logger_walls = [
         set_logger(
@@ -440,7 +481,7 @@ function run_single_simulation(wall, opening, climate, output_dir::String, case_
         for i = 1:length(network_model.walls)
     ]
     for i = 1:length(logger_walls)
-        println("      ├─ result_wall$i ✅")
+        tprintln("      ├─ result_wall$i ✅")
     end
 
     logger_room_analysis = set_logger(
@@ -449,30 +490,30 @@ function run_single_simulation(wall, opening, climate, output_dir::String, case_
         ["room_analysis"],
         network_model
     )
-    println("      └─ result_room_analysis ✅")
-    println()
+    tprintln("      └─ result_room_analysis ✅")
+    tprintln()
 
     loggers = vcat(logger_rooms, [logger_walls[i] for i = 1:length(logger_walls)], logger_room_analysis)
 
     # ヘッダー書き込み
-    println("   📝 ヘッダー書き込み...")
+    tprintln("   📝 ヘッダー書き込み...")
     for files in loggers
         write_header_to_logger(files)
         write_data_to_logger(files, network_model.climate.date)
     end
-    println("      └─ ✅ $(length(loggers)) ファイルに書き込み完了")
-    println()
+    tprintln("      └─ ✅ $(length(loggers)) ファイルに書き込み完了")
+    tprintln()
 
     # 計算ループ
-    println("   🔄 ══════════════════════════════════════════════════════════")
-    println("   🔄  計算ループ開始")
-    println("   🔄 ══════════════════════════════════════════════════════════")
-    println()
-    println("      📅 期間: $START_DATE → $END_DATE")
-    println("      ⏱️  時間刻み: $DT hour")
-    println("      📊 出力間隔: $OUTPUT_INTERVAL hour")
-    println()
-    println("      ───────────────────────────────────────────────────────────")
+    tprintln("   🔄 ══════════════════════════════════════════════════════════")
+    tprintln("   🔄  計算ループ開始")
+    tprintln("   🔄 ══════════════════════════════════════════════════════════")
+    tprintln()
+    tprintln("      📅 期間: $START_DATE → $END_DATE")
+    tprintln("      ⏱️  時間刻み: $DT hour")
+    tprintln("      📊 出力間隔: $OUTPUT_INTERVAL hour")
+    tprintln()
+    tprintln("      ───────────────────────────────────────────────────────────")
 
     step_count = 0
     calc_start_time = now()
@@ -499,7 +540,7 @@ function run_single_simulation(wall, opening, climate, output_dir::String, case_
             in_temp = round(temp(network_model.rooms[2]) - 273.15, digits=1)
             in_rh = round(rh(network_model.rooms[2]) * 100, digits=0)
 
-            println("      📅 ", Dates.format(network_model.climate.date, "yyyy/mm/dd"),
+            tprintln("      📅 ", Dates.format(network_model.climate.date, "yyyy/mm/dd"),
                     "  🌤️  外気: ", out_temp, "℃ ", out_rh, "%",
                     "  🏠 室内: ", in_temp, "℃ ", in_rh, "%",
                     "  ⏱️  ", format_duration(elapsed_sec))
@@ -512,18 +553,18 @@ function run_single_simulation(wall, opening, climate, output_dir::String, case_
         end
     end
 
-    println("      ───────────────────────────────────────────────────────────")
-    println()
+    tprintln("      ───────────────────────────────────────────────────────────")
+    tprintln()
 
     # ファイルクローズ
-    println("   📁 ファイルクローズ...")
+    tprintln("   📁 ファイルクローズ...")
     for files in loggers
         for i = 1:length(files.file)
             close(files.file[i])
         end
     end
-    println("      └─ ✅ 全ファイルクローズ完了")
-    println()
+    tprintln("      └─ ✅ 全ファイルクローズ完了")
+    tprintln()
 
     # 設定ファイルに完了時刻を追記
     calc_end_time = now()
@@ -536,14 +577,14 @@ function run_single_simulation(wall, opening, climate, output_dir::String, case_
     end
 
     # 完了メッセージ
-    println("   🎉 ──────────────────────────────────────────────────────────")
-    println("   🎉  パターン完了!")
-    println("   🎉 ──────────────────────────────────────────────────────────")
-    println()
-    println("      📊 統計:")
-    println("         ├─ 総ステップ数: $step_count")
-    println("         └─ 計算時間: $(format_duration(calc_elapsed))")
-    println()
+    tprintln("   🎉 ──────────────────────────────────────────────────────────")
+    tprintln("   🎉  パターン完了!")
+    tprintln("   🎉 ──────────────────────────────────────────────────────────")
+    tprintln()
+    tprintln("      📊 統計:")
+    tprintln("         ├─ 総ステップ数: $step_count")
+    tprintln("         └─ 計算時間: $(format_duration(calc_elapsed))")
+    tprintln()
 
     return calc_elapsed
 end
@@ -664,247 +705,259 @@ end
 =============================================================================#
 
 function main()
-    println()
-    println("⚙️  ════════════════════════════════════════════════════════════════")
-    println("⚙️   設定確認")
-    println("⚙️  ════════════════════════════════════════════════════════════════")
-    println()
-
-    # パターン定義表示
-    println("📊 パターン定義:")
-    println()
-    println("   🧱 壁体パターン ($(length(WALL_PATTERNS))種類):")
-    for (i, w) in enumerate(WALL_PATTERNS)
-        prefix = i == length(WALL_PATTERNS) ? "└─" : "├─"
-        println("      $prefix [$(w.id)] $(w.name)")
-    end
-    println()
-    println("   🚪 換気パターン ($(length(OPENING_PATTERNS))種類):")
-    for (i, o) in enumerate(OPENING_PATTERNS)
-        prefix = i == length(OPENING_PATTERNS) ? "└─" : "├─"
-        println("      $prefix [$(o.id)] $(o.name)")
-    end
-    println()
-    println("   🌤️  気候パターン ($(length(CLIMATE_PATTERNS))種類):")
-    for (i, c) in enumerate(CLIMATE_PATTERNS)
-        prefix = i == length(CLIMATE_PATTERNS) ? "└─" : "├─"
-        println("      $prefix [$(c.id)] $(c.name) (経度:$(c.lon), 緯度:$(c.phi))")
-    end
-    println()
-
-    # 計算条件表示
-    println("⏱️  計算条件:")
-    println("   ├─ 時間刻み dt: $DT hour ($(Int(DT * 60))分)")
-    println("   ├─ 開始時刻: $START_DATE")
-    println("   ├─ 終了時刻: $END_DATE")
-    println("   └─ 出力間隔: $OUTPUT_INTERVAL hour")
-    println()
-
-    # バッチディレクトリ作成
-    println("📁 出力ディレクトリ作成...")
+    # バッチディレクトリを先に作成（ログファイル用）
     batch_dir = get_batch_dir()
     mkpath(batch_dir)
-    println("   └─ ✅ 作成完了: $(abspath(batch_dir))")
-    println()
 
-    # 全パターンの組み合わせを生成
-    all_cases = []
-    for wall in WALL_PATTERNS
-        for opening in OPENING_PATTERNS
-            for climate in CLIMATE_PATTERNS
-                case_id = "$(wall.id)_$(opening.id)_$(climate.id)"
-                push!(all_cases, (case_id=case_id, wall=wall, opening=opening, climate=climate))
-            end
+    # ターミナルログの初期化
+    setup_terminal_log(joinpath(batch_dir, "_terminal_log.txt"))
+
+    try
+        tprintln()
+        tprintln("⚙️  ════════════════════════════════════════════════════════════════")
+        tprintln("⚙️   設定確認")
+        tprintln("⚙️  ════════════════════════════════════════════════════════════════")
+        tprintln()
+
+        # パターン定義表示
+        tprintln("📊 パターン定義:")
+        tprintln()
+        tprintln("   🧱 壁体パターン ($(length(WALL_PATTERNS))種類):")
+        for (i, w) in enumerate(WALL_PATTERNS)
+            prefix = i == length(WALL_PATTERNS) ? "└─" : "├─"
+            tprintln("      $prefix [$(w.id)] $(w.name)")
         end
-    end
-
-    total = length(all_cases)
-
-    println("📊 総パターン数:")
-    println("   ├─ $(length(WALL_PATTERNS)) (壁体) × $(length(OPENING_PATTERNS)) (換気) × $(length(CLIMATE_PATTERNS)) (気候)")
-    println("   └─ = $total パターン")
-    println()
-
-    # 完了済みパターンを読み込み
-    completed_set = load_completed(batch_dir)
-    skipped_count = length(completed_set)
-
-    if skipped_count > 0
-        println("🔄 再開モード検出:")
-        println("   ├─ 完了済み: $skipped_count パターン")
-        println("   └─ 残り: $(total - skipped_count) パターン")
-        println()
-    end
-
-    # サマリCSVヘッダー
-    write_summary_header(batch_dir)
-
-    # 初期ログ
-    log_message(batch_dir, "════════════════════════════════════════════════════════", also_print=false)
-    log_message(batch_dir, "🚀 バッチ実行開始", also_print=false)
-    log_message(batch_dir, "   総パターン数: $total", also_print=false)
-    log_message(batch_dir, "   スキップ済み: $skipped_count", also_print=false)
-    log_message(batch_dir, "════════════════════════════════════════════════════════", also_print=false)
-
-    # 実行開始
-    batch_start_time = now()
-    completed_count = skipped_count
-    failed_count = 0
-
-    println()
-    println("🔄 ════════════════════════════════════════════════════════════════")
-    println("🔄  バッチ実行開始")
-    println("🔄 ════════════════════════════════════════════════════════════════")
-    println()
-
-    for (idx, case) in enumerate(all_cases)
-        case_id = case.case_id
-
-        # 進捗更新
-        elapsed = Dates.value(now() - batch_start_time) / 1000
-        remaining = estimate_remaining(elapsed, completed_count - skipped_count, total - skipped_count)
-
-        update_progress(batch_dir, idx, total, case_id, "準備中",
-                       completed=completed_count, failed=failed_count, skipped=skipped_count,
-                       start_time=batch_start_time, estimated_remaining=remaining)
-
-        # 完了済みならスキップ
-        if case_id in completed_set
-            println("⏭️  [$idx/$total] $case_id")
-            println("   └─ スキップ（完了済み）")
-            println()
-            continue
+        tprintln()
+        tprintln("   🚪 換気パターン ($(length(OPENING_PATTERNS))種類):")
+        for (i, o) in enumerate(OPENING_PATTERNS)
+            prefix = i == length(OPENING_PATTERNS) ? "└─" : "├─"
+            tprintln("      $prefix [$(o.id)] $(o.name)")
         end
+        tprintln()
+        tprintln("   🌤️  気候パターン ($(length(CLIMATE_PATTERNS))種類):")
+        for (i, c) in enumerate(CLIMATE_PATTERNS)
+            prefix = i == length(CLIMATE_PATTERNS) ? "└─" : "├─"
+            tprintln("      $prefix [$(c.id)] $(c.name) (経度:$(c.lon), 緯度:$(c.phi))")
+        end
+        tprintln()
 
-        # 出力ディレクトリ作成
-        case_output_dir = joinpath(batch_dir, case_id)
-        mkpath(case_output_dir)
+        # 計算条件表示
+        tprintln("⏱️  計算条件:")
+        tprintln("   ├─ 時間刻み dt: $DT hour ($(Int(DT * 60))分)")
+        tprintln("   ├─ 開始時刻: $START_DATE")
+        tprintln("   ├─ 終了時刻: $END_DATE")
+        tprintln("   └─ 出力間隔: $OUTPUT_INTERVAL hour")
+        tprintln()
 
-        println("🔄 ════════════════════════════════════════════════════════════════")
-        println("🔄  [$idx/$total] $case_id")
-        println("🔄 ════════════════════════════════════════════════════════════════")
-        println()
-        println("   📊 パターン詳細:")
-        println("      ├─ 🧱 壁体: $(case.wall.name) ($(case.wall.id))")
-        println("      ├─ 🚪 換気: $(case.opening.name) ($(case.opening.id))")
-        println("      └─ 🌤️  気候: $(case.climate.name) ($(case.climate.id))")
+        # バッチディレクトリ作成済み
+        tprintln("📁 出力ディレクトリ作成...")
+        tprintln("   └─ ✅ 作成完了: $(abspath(batch_dir))")
+        tprintln()
 
-        # 進捗更新
-        update_progress(batch_dir, idx, total, case_id, "実行中",
-                       completed=completed_count, failed=failed_count, skipped=skipped_count,
-                       start_time=batch_start_time, estimated_remaining=remaining)
-
-        log_message(batch_dir, "開始: $case_id", also_print=false)
-
-        case_start_time = now()
-
-        try
-            duration = run_single_simulation(case.wall, case.opening, case.climate, case_output_dir, idx, total)
-
-            case_end_time = now()
-
-            completed_count += 1
-            mark_completed(batch_dir, case_id)
-
-            append_summary(batch_dir, case_id, case.wall, case.opening, case.climate,
-                          "SUCCESS", duration, case_start_time, case_end_time)
-
-            log_message(batch_dir, "完了: $case_id ($(format_duration(duration)))", also_print=false)
-
-            # 全体進捗表示
-            elapsed_total = Dates.value(now() - batch_start_time) / 1000
-            remaining_est = estimate_remaining(elapsed_total, completed_count - skipped_count, total - skipped_count)
-
-            println("   📊 全体進捗: $completed_count/$total 完了 | 残り時間: $remaining_est")
-            println()
-
-        catch e
-            case_end_time = now()
-            duration = Dates.value(case_end_time - case_start_time) / 1000
-
-            failed_count += 1
-            error_msg = sprint(showerror, e)
-
-            append_summary(batch_dir, case_id, case.wall, case.opening, case.climate,
-                          "FAILED", duration, case_start_time, case_end_time, error_msg)
-
-            log_message(batch_dir, "❌ 失敗: $case_id - $error_msg")
-
-            println()
-            println("   ❌ ──────────────────────────────────────────────────────────")
-            println("   ❌  エラー発生")
-            println("   ❌ ──────────────────────────────────────────────────────────")
-            println()
-            println("      $error_msg")
-            println()
-
-            # エラーログをケースフォルダにも保存
-            error_file = joinpath(case_output_dir, "_error.txt")
-            open(error_file, "w") do f
-                println(f, "🚨 エラー発生")
-                println(f, "")
-                println(f, "⏰ 発生時刻: $(Dates.format(case_end_time, "yyyy-mm-dd HH:MM:SS"))")
-                println(f, "")
-                println(f, "📝 エラーメッセージ:")
-                println(f, error_msg)
-                println(f, "")
-                println(f, "📋 スタックトレース:")
-                for (exc, bt) in Base.catch_stack()
-                    showerror(f, exc, bt)
-                    println(f)
+        # 全パターンの組み合わせを生成（気候を最外ループに：京都→沖縄→札幌の順）
+        all_cases = []
+        for climate in CLIMATE_PATTERNS
+            for wall in WALL_PATTERNS
+                for opening in OPENING_PATTERNS
+                    case_id = "$(wall.id)_$(opening.id)_$(climate.id)"
+                    push!(all_cases, (case_id=case_id, wall=wall, opening=opening, climate=climate))
                 end
             end
         end
+
+        total = length(all_cases)
+
+        tprintln("📊 総パターン数:")
+        tprintln("   ├─ $(length(WALL_PATTERNS)) (壁体) × $(length(OPENING_PATTERNS)) (換気) × $(length(CLIMATE_PATTERNS)) (気候)")
+        tprintln("   └─ = $total パターン")
+        tprintln()
+
+        # 完了済みパターンを読み込み
+        completed_set = load_completed(batch_dir)
+        skipped_count = length(completed_set)
+
+        if skipped_count > 0
+            tprintln("🔄 再開モード検出:")
+            tprintln("   ├─ 完了済み: $skipped_count パターン")
+            tprintln("   └─ 残り: $(total - skipped_count) パターン")
+            tprintln()
+        end
+
+        # サマリCSVヘッダー
+        write_summary_header(batch_dir)
+
+        # 初期ログ
+        log_message(batch_dir, "════════════════════════════════════════════════════════", also_print=false)
+        log_message(batch_dir, "🚀 バッチ実行開始", also_print=false)
+        log_message(batch_dir, "   総パターン数: $total", also_print=false)
+        log_message(batch_dir, "   スキップ済み: $skipped_count", also_print=false)
+        log_message(batch_dir, "════════════════════════════════════════════════════════", also_print=false)
+
+        # 実行開始
+        batch_start_time = now()
+        completed_count = skipped_count
+        failed_count = 0
+
+        tprintln()
+        tprintln("🔄 ════════════════════════════════════════════════════════════════")
+        tprintln("🔄  バッチ実行開始")
+        tprintln("🔄 ════════════════════════════════════════════════════════════════")
+        tprintln()
+
+        for (idx, case) in enumerate(all_cases)
+            case_id = case.case_id
+
+            # 進捗更新
+            elapsed = Dates.value(now() - batch_start_time) / 1000
+            remaining = estimate_remaining(elapsed, completed_count - skipped_count, total - skipped_count)
+
+            update_progress(batch_dir, idx, total, case_id, "準備中",
+                           completed=completed_count, failed=failed_count, skipped=skipped_count,
+                           start_time=batch_start_time, estimated_remaining=remaining)
+
+            # 完了済みならスキップ
+            if case_id in completed_set
+                tprintln("⏭️  [$idx/$total] $case_id")
+                tprintln("   └─ スキップ（完了済み）")
+                tprintln()
+                continue
+            end
+
+            # 出力ディレクトリ作成
+            case_output_dir = joinpath(batch_dir, case_id)
+            mkpath(case_output_dir)
+
+            tprintln("🔄 ════════════════════════════════════════════════════════════════")
+            tprintln("🔄  [$idx/$total] $case_id")
+            tprintln("🔄 ════════════════════════════════════════════════════════════════")
+            tprintln()
+            tprintln("   📊 パターン詳細:")
+            tprintln("      ├─ 🧱 壁体: $(case.wall.name) ($(case.wall.id))")
+            tprintln("      ├─ 🚪 換気: $(case.opening.name) ($(case.opening.id))")
+            tprintln("      └─ 🌤️  気候: $(case.climate.name) ($(case.climate.id))")
+
+            # 進捗更新
+            update_progress(batch_dir, idx, total, case_id, "実行中",
+                           completed=completed_count, failed=failed_count, skipped=skipped_count,
+                           start_time=batch_start_time, estimated_remaining=remaining)
+
+            log_message(batch_dir, "開始: $case_id", also_print=false)
+
+            case_start_time = now()
+
+            try
+                duration = run_single_simulation(case.wall, case.opening, case.climate, case_output_dir, idx, total)
+
+                case_end_time = now()
+
+                completed_count += 1
+                mark_completed(batch_dir, case_id)
+
+                append_summary(batch_dir, case_id, case.wall, case.opening, case.climate,
+                              "SUCCESS", duration, case_start_time, case_end_time)
+
+                log_message(batch_dir, "完了: $case_id ($(format_duration(duration)))", also_print=false)
+
+                # 全体進捗表示
+                elapsed_total = Dates.value(now() - batch_start_time) / 1000
+                remaining_est = estimate_remaining(elapsed_total, completed_count - skipped_count, total - skipped_count)
+
+                tprintln("   📊 全体進捗: $completed_count/$total 完了 | 残り時間: $remaining_est")
+                tprintln()
+
+            catch e
+                case_end_time = now()
+                duration = Dates.value(case_end_time - case_start_time) / 1000
+
+                failed_count += 1
+                error_msg = sprint(showerror, e)
+
+                append_summary(batch_dir, case_id, case.wall, case.opening, case.climate,
+                              "FAILED", duration, case_start_time, case_end_time, error_msg)
+
+                log_message(batch_dir, "❌ 失敗: $case_id - $error_msg")
+
+                tprintln()
+                tprintln("   ❌ ──────────────────────────────────────────────────────────")
+                tprintln("   ❌  エラー発生")
+                tprintln("   ❌ ──────────────────────────────────────────────────────────")
+                tprintln()
+                tprintln("      $error_msg")
+                tprintln()
+
+                # エラーログをケースフォルダにも保存
+                error_file = joinpath(case_output_dir, "_error.txt")
+                open(error_file, "w") do f
+                    println(f, "🚨 エラー発生")
+                    println(f, "")
+                    println(f, "⏰ 発生時刻: $(Dates.format(case_end_time, "yyyy-mm-dd HH:MM:SS"))")
+                    println(f, "")
+                    println(f, "📝 エラーメッセージ:")
+                    println(f, error_msg)
+                    println(f, "")
+                    println(f, "📋 スタックトレース:")
+                    for (exc, bt) in Base.catch_stack()
+                        showerror(f, exc, bt)
+                        println(f)
+                    end
+                end
+            end
+        end
+
+        # 最終進捗更新
+        batch_end_time = now()
+        total_elapsed = Dates.value(batch_end_time - batch_start_time) / 1000
+
+        update_progress(batch_dir, total, total, "完了", "全パターン処理完了",
+                       completed=completed_count, failed=failed_count, skipped=skipped_count,
+                       start_time=batch_start_time, estimated_remaining="0秒")
+
+        # 最終ログ
+        log_message(batch_dir, "════════════════════════════════════════════════════════", also_print=false)
+        log_message(batch_dir, "🎉 バッチ実行完了", also_print=false)
+        log_message(batch_dir, "   総時間: $(format_duration(total_elapsed))", also_print=false)
+        log_message(batch_dir, "   完了: $completed_count / $total", also_print=false)
+        log_message(batch_dir, "   失敗: $failed_count", also_print=false)
+        log_message(batch_dir, "════════════════════════════════════════════════════════", also_print=false)
+
+        # 完了メッセージ
+        tprintln()
+        tprintln("🎉 ════════════════════════════════════════════════════════════════")
+        tprintln("🎉  バッチ実行完了!")
+        tprintln("🎉 ════════════════════════════════════════════════════════════════")
+        tprintln()
+        tprintln("   📊 結果サマリ:")
+        tprintln("      ├─ 総パターン数:   $total")
+        tprintln("      ├─ ✅ 完了:        $completed_count")
+        tprintln("      ├─ ❌ 失敗:        $failed_count")
+        tprintln("      ├─ ⏭️  スキップ:    $skipped_count")
+        tprintln("      └─ ⏱️  総実行時間:  $(format_duration(total_elapsed))")
+        tprintln()
+        tprintln("   📁 出力先:")
+        tprintln("      └─ $(abspath(batch_dir))")
+        tprintln()
+        tprintln("   📄 確認用ファイル:")
+        tprintln("      ├─ _progress.txt     進捗状況")
+        tprintln("      ├─ _summary.csv      全パターン結果一覧")
+        tprintln("      ├─ _batch_log.txt    実行ログ")
+        tprintln("      ├─ _terminal_log.txt ターミナル出力")
+        tprintln("      └─ _completed.txt    完了済みリスト")
+        tprintln()
+
+        if failed_count > 0
+            tprintln("   ⚠️  注意:")
+            tprintln("      └─ $failed_count パターンが失敗しました")
+            tprintln("         _summary.csv で詳細を確認してください")
+            tprintln()
+        end
+
+        tprintln("✅ 正常終了")
+        tprintln()
+
+    finally
+        # ターミナルログのクローズ
+        close_terminal_log()
     end
-
-    # 最終進捗更新
-    batch_end_time = now()
-    total_elapsed = Dates.value(batch_end_time - batch_start_time) / 1000
-
-    update_progress(batch_dir, total, total, "完了", "全パターン処理完了",
-                   completed=completed_count, failed=failed_count, skipped=skipped_count,
-                   start_time=batch_start_time, estimated_remaining="0秒")
-
-    # 最終ログ
-    log_message(batch_dir, "════════════════════════════════════════════════════════", also_print=false)
-    log_message(batch_dir, "🎉 バッチ実行完了", also_print=false)
-    log_message(batch_dir, "   総時間: $(format_duration(total_elapsed))", also_print=false)
-    log_message(batch_dir, "   完了: $completed_count / $total", also_print=false)
-    log_message(batch_dir, "   失敗: $failed_count", also_print=false)
-    log_message(batch_dir, "════════════════════════════════════════════════════════", also_print=false)
-
-    # 完了メッセージ
-    println()
-    println("🎉 ════════════════════════════════════════════════════════════════")
-    println("🎉  バッチ実行完了!")
-    println("🎉 ════════════════════════════════════════════════════════════════")
-    println()
-    println("   📊 結果サマリ:")
-    println("      ├─ 総パターン数:   $total")
-    println("      ├─ ✅ 完了:        $completed_count")
-    println("      ├─ ❌ 失敗:        $failed_count")
-    println("      ├─ ⏭️  スキップ:    $skipped_count")
-    println("      └─ ⏱️  総実行時間:  $(format_duration(total_elapsed))")
-    println()
-    println("   📁 出力先:")
-    println("      └─ $(abspath(batch_dir))")
-    println()
-    println("   📄 確認用ファイル:")
-    println("      ├─ _progress.txt    進捗状況")
-    println("      ├─ _summary.csv     全パターン結果一覧")
-    println("      ├─ _batch_log.txt   実行ログ")
-    println("      └─ _completed.txt   完了済みリスト")
-    println()
-
-    if failed_count > 0
-        println("   ⚠️  注意:")
-        println("      └─ $failed_count パターンが失敗しました")
-        println("         _summary.csv で詳細を確認してください")
-        println()
-    end
-
-    println("✅ 正常終了")
-    println()
 end
 
 # 実行
