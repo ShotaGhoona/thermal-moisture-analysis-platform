@@ -28,7 +28,7 @@ climate-data/
 
 ```
 date,temp,rh,p_atm,Jp,Js,WS,WD,Qs,tau,cloudiness
-2020/1/1 0:00,3.9,72,,0.0,,1.1,南,,1.0e-50,
+2022/1/1 0:00,3.9,72,,0.0,,1.1,南,,1.0e-50,
 ```
 
 | カラム | 単位 | 説明 |
@@ -60,5 +60,5 @@ julia input_data/building_network_model_production/climate-data/script/convert_c
 
 - 絶対湿度 → 相対湿度（Tetens式）
 - 風向（度） → 日本語16方位
-- 年の付与（2020年）
+- 年の付与（2022年）
 - エンコーディング: Shift_JIS

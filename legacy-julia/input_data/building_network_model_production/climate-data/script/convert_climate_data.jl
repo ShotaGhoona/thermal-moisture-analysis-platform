@@ -50,7 +50,7 @@ function wind_direction_to_jp(deg)
 end
 
 """生データを変換してプログラム用フォーマットに出力"""
-function convert_weather_data(input_file, output_file; year=2020)
+function convert_weather_data(input_file, output_file; year=2022)
 
     println("Reading: $input_file")
 
@@ -153,7 +153,7 @@ function main()
     raw_dir = joinpath(script_dir, "..", "raw")
     output_dir = joinpath(script_dir, "..")
 
-    # 各都市のデータを変換（2020年として）
+    # 各都市のデータを変換（2022年として）
     cities = [
         ("weather_Kyoto.csv", "climate_data_kyoto.csv"),
         ("weather_Okinawa.csv", "climate_data_okinawa.csv"),
@@ -165,7 +165,7 @@ function main()
         output_path = joinpath(output_dir, output_name)
 
         if isfile(input_path)
-            convert_weather_data(input_path, output_path, year=2020)
+            convert_weather_data(input_path, output_path, year=2022)
         else
             println("Warning: $input_path not found")
         end

@@ -25,8 +25,8 @@ const INPUT_CLIMATE = "input_data/building_network_model_production/climate-data
 
 # --- 計算条件 ---
 const DT = 0.1                                      # 時間刻み [hour]
-const START_DATE = DateTime(2020, 4, 1, 0, 0, 0)    # 計算開始時刻
-const END_DATE   = DateTime(2020, 10, 1, 0, 0, 0)   # 計算終了時刻（または下記で期間指定）
+const START_DATE = DateTime(2022, 4, 1, 0, 0, 0)    # 計算開始時刻
+const END_DATE   = DateTime(2022, 10, 1, 0, 0, 0)   # 計算終了時刻（または下記で期間指定）
 # const END_DATE = START_DATE + Month(6)            # 開始から6ヶ月後
 
 # --- 出力設定 ---

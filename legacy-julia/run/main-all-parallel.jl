@@ -84,8 +84,8 @@ const ROOM_FILE = "01-base-model.csv"
 =============================================================================#
 
 const DT = 0.1                                      # 時間刻み [hour]
-const START_DATE = DateTime(2020, 1, 1, 0, 0, 0)    # 計算開始時刻
-const END_DATE   = DateTime(2021, 1, 1, 0, 0, 0)    # 計算終了時刻（1年間）
+const START_DATE = DateTime(2022, 1, 1, 0, 0, 0)    # 計算開始時刻
+const END_DATE   = DateTime(2023, 1, 1, 0, 0, 0)    # 計算終了時刻（1年間）
 const OUTPUT_INTERVAL = 10.0                        # 出力間隔 [hour]
 const LONS = 135.0                                  # 地方標準時の経度
 
@@ -506,7 +506,6 @@ function run_single_simulation(wall, opening, climate, output_dir::String, case_
     # 計算ループ
     step_count = 0
     calc_start_time = now()
-    last_log_date = Date(START_DATE)
 
     while network_model.climate.date ≠ END_DATE
         step_count += 1
@@ -516,17 +515,21 @@ function run_single_simulation(wall, opening, climate, output_dir::String, case_
         cal_network_flux_of_ventilation(network_model)
         cal_new_value_ver_network(network_model, DT)
 
-        # 月次進捗ログ
-        current_date = Date(network_model.climate.date)
-        if month(current_date) != month(last_log_date)
+        # 日次進捗ログ（毎日0時に表示）
+        if hour(network_model.climate.date) == 0 &&
+           minute(network_model.climate.date) == 0 &&
+           second(network_model.climate.date) == 0 &&
+           millisecond(network_model.climate.date) == 0
+
             elapsed = now() - calc_start_time
             elapsed_sec = Dates.value(elapsed) / 1000
 
             out_temp = round(temp(network_model.climate) - 273.15, digits=1)
+            out_rh = round(rh(network_model.climate) * 100, digits=0)
             in_temp = round(temp(network_model.rooms[2]) - 273.15, digits=1)
+            in_rh = round(rh(network_model.rooms[2]) * 100, digits=0)
 
-            thread_log("$case_id: $(Dates.format(current_date, "yyyy/mm")) 外気:$(out_temp)℃ 室内:$(in_temp)℃ $(format_duration(elapsed_sec))")
-            last_log_date = current_date
+            thread_log("$case_id: $(Dates.format(network_model.climate.date, "yyyy/mm/dd")) 外気:$(out_temp)℃ $(out_rh)% 室内:$(in_temp)℃ $(in_rh)% $(format_duration(elapsed_sec))")
         end
 
         time_elapses(network_model.climate, DT)
