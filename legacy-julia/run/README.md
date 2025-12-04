@@ -351,11 +351,13 @@ const CASE_NAME = "case_high_ventilation"
 
 `input_data/building_network_model_production/climate-data/` に以下の気象データが利用可能：
 
-| ファイル | 都市 | 気温範囲 |
-|----------|------|----------|
-| `climate_data_kyoto.csv` | 京都 | -2〜35℃ |
-| `climate_data_okinawa.csv` | 沖縄 | 13〜31℃ |
-| `climate_data_sapporo.csv` | 札幌 | -14〜31℃ |
+| ファイル | 都市 | 気温範囲 | 期間 |
+|----------|------|----------|------|
+| `climate_data_kyoto.csv` | 京都 | -2〜35℃ | 2022/4/1 〜 2023/3/31 |
+| `climate_data_okinawa.csv` | 沖縄 | 13〜31℃ | 2022/4/1 〜 2023/3/31 |
+| `climate_data_sapporo.csv` | 札幌 | -14〜31℃ | 2022/4/1 〜 2023/3/31 |
+
+※ 気象データは10年間の平均値に基づく代表年データ（4月スタート）
 
 ## 関連ファイル
 

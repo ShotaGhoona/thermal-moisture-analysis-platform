@@ -84,8 +84,8 @@ const ROOM_FILE = "01-base-model.csv"
 =============================================================================#
 
 const DT = 0.1                                      # 時間刻み [hour]
-const START_DATE = DateTime(2022, 1, 1, 0, 0, 0)    # 計算開始時刻
-const END_DATE   = DateTime(2023, 1, 1, 0, 0, 0)    # 計算終了時刻（1年間）
+const START_DATE = DateTime(2022, 4, 1, 0, 0, 0)    # 計算開始時刻
+const END_DATE   = DateTime(2023, 4, 1, 0, 0, 0)    # 計算終了時刻（1年間）
 const OUTPUT_INTERVAL = 10.0                        # 出力間隔 [hour]
 const LONS = 135.0                                  # 地方標準時の経度
 
