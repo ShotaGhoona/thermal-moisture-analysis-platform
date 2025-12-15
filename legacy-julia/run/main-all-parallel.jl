@@ -466,11 +466,17 @@ function run_single_simulation(wall, opening, climate, output_dir::String, case_
     case_log(output_dir, "  外気温: $(round(temp(network_model.climate) - 273.15, digits=1)) ℃")
     case_log(output_dir, "  外気湿度: $(round(rh(network_model.climate) * 100, digits=0)) %")
 
-    # ロガー設定
-    relative_output = replace(output_dir, joinpath(PROJECT_DIR, "output_data") * "/" => "")
+    # ロガー設定（クロスプラットフォーム対応）
+    output_data_dir = joinpath(PROJECT_DIR, "output_data")
+    relative_output = if startswith(output_dir, output_data_dir)
+        output_dir[length(output_data_dir)+2:end]
+    else
+        basename(output_dir)
+    end
+    relative_output = replace(relative_output, "\\" => "/")
 
     logger_rooms = set_logger(
-        joinpath(relative_output, "result_all_rooms"),
+        relative_output * "/result_all_rooms",
         OUTPUT_INTERVAL,
         ["temp", "rh", "ah"],
         network_model.rooms
@@ -478,7 +484,7 @@ function run_single_simulation(wall, opening, climate, output_dir::String, case_
 
     logger_walls = [
         set_logger(
-            joinpath(relative_output, "result_wall" * string(i)),
+            relative_output * "/result_wall" * string(i),
             OUTPUT_INTERVAL,
             ["temp", "rh", "ah", "phi"],
             network_model.walls[i].target_model
@@ -487,7 +493,7 @@ function run_single_simulation(wall, opening, climate, output_dir::String, case_
     ]
 
     logger_room_analysis = set_logger(
-        joinpath(relative_output, "result_room_analysis"),
+        relative_output * "/result_room_analysis",
         OUTPUT_INTERVAL,
         ["room_analysis"],
         network_model
