@@ -74,7 +74,7 @@ function input_opening_data(file_name::String, header::Int = 3)
         file_directory = "../input_data/building_network_model/"*string(file_name)*".csv"        
     end
     
-    input_data = CSV.File( file_directory, header = header) |> DataFrame
+    input_data = CSV.File( file_directory, header = header, ntasks = 1) |> DataFrame
     
     # 空の壁データを作成
     data = [ Opening() for i = 1 : length(input_data.BC) ]

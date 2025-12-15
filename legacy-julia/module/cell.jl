@@ -95,7 +95,7 @@ function input_cell_data(file_name::String, header_num::Int = 3)
     # ファイル名のみが書かれている場合、
     else; file_path = "./input_data/1D_model/"*string(file_name)*".csv"        
     end
-    input_data = CSV.File( file_path, header = header_num) |> DataFrame
+    input_data = CSV.File( file_path, header = header_num, ntasks = 1) |> DataFrame
 
     # 空の開口条件データを作成
     target_model = [if input_data.type[i] == "BC_Neumann"; BC_Neumann() 

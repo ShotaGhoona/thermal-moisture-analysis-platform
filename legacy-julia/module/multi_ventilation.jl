@@ -61,7 +61,7 @@ end
 function cal_datin()
         
     # 入力ファイルの読み込み
-    vent_open_condition = CSV.File("./input_data/vent_open_condition.csv", header = 4) |> DataFrame;
+    vent_open_condition = CSV.File("./input_data/vent_open_condition.csv", header = 4, ntasks = 1) |> DataFrame;
     
     # 空の開口条件データを作成
     voc_data = [ Opening_condition() for i = 1 : length(vent_open_condition.BC) ]

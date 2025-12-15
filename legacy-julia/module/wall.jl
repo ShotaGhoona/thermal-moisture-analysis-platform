@@ -60,8 +60,8 @@ function input_wall_data(file_name::String, header::Int = 3)
         file_directory = "../input_data/building_network_model/"*string(file_name)*".csv"        
     end
 
-    # 入力ファイルの読み込み
-    input_data = CSV.File( file_directory, header = header) |> DataFrame
+    # 入力ファイルの読み込み（ntasks=1で並列実行時のスレッド競合を回避）
+    input_data = CSV.File( file_directory, header = header, ntasks = 1) |> DataFrame
     
     # 空の壁データを作成
     data = [ Wall() for i = 1 : length(input_data.num) ]
@@ -116,7 +116,7 @@ function input_wall_data(file_name::String, header::Int = 3)
             cell_data_loaded = false
             for path in cell_data_paths
                 try
-                    cell_data = CSV.File(path, header = 3) |> DataFrame
+                    cell_data = CSV.File(path, header = 3, ntasks = 1) |> DataFrame
                     cell_data_loaded = true
                     break
                 catch

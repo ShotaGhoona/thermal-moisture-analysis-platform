@@ -119,7 +119,7 @@ function input_room_data(file_name::String, header::Int = 3)
     end
 
     # 入力ファイルの読み込み
-    input_data = CSV.File( file_directory, header = header) |> DataFrame
+    input_data = CSV.File( file_directory, header = header, ntasks = 1) |> DataFrame
     
     # 空の空気データを作成
     data = [ Room() for i = 1 : length(input_data.num) ]
