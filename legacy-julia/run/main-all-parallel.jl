@@ -801,8 +801,8 @@ function main()
             end
         end
 
-        # 並列実行
-        @threads for case in all_cases
+        # 並列実行（:dynamic スケジューラーでネスト問題を回避）
+        @threads :dynamic for case in all_cases
             case_id = case.case_id
             tid = threadid()
 

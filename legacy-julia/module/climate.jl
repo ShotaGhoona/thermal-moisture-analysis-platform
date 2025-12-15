@@ -114,8 +114,19 @@ function input_climate_data(file_name::String, header::Int = 3)
     end
     
     ###################################
-    # 入力ファイルの読み込み：日本語対応
-    input_data = CSV.File(open(file_directory, enc"Shift_JIS"), header = header) |> DataFrame
+    # 入力ファイルの読み込み：日本語対応（マルチプラットフォーム）
+    input_data = try
+        # まずShift-JISとして読み込みを試みる
+        CSV.File(open(file_directory, enc"Shift_JIS"), header = header) |> DataFrame
+    catch e1
+        try
+            # 失敗したらCP932（Windows日本語）として読み込み
+            CSV.File(open(file_directory, enc"CP932"), header = header) |> DataFrame
+        catch e2
+            # それでも失敗したらUTF-8として読み込み
+            CSV.File(file_directory, header = header) |> DataFrame
+        end
+    end
     # ⇒ DateTime型への変換
     input_data.date = DateTime.( input_data[!,1], dateformat"y/m/d HH:MM")
 
