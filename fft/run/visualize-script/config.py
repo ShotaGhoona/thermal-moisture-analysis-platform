@@ -76,4 +76,6 @@ VARIABLE_NAMES = {
     'room2_temp': '室2温度',
     'room1_rh': '室1相対湿度',
     'room2_rh': '室2相対湿度',
+    'room1_ah': '室1絶対湿度',
+    'room2_ah': '室2絶対湿度',
 }

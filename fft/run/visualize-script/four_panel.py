@@ -1,5 +1,5 @@
 """
-4パネル比較グラフ（温度・湿度 × room1・room2）
+6パネル比較グラフ（温度・相対湿度・絶対湿度 × room1・room2）
 """
 
 import matplotlib.pyplot as plt
@@ -15,11 +15,11 @@ def plot_four_panel_comparison(
     filter_dict: dict = None  # 例: {'climate': 'kyoto', 'opening': 'o01-base'}
 ):
     """
-    4パネル比較グラフ（室1温度、室1湿度、室2温度、室2湿度）
+    6パネル比較グラフ（室1温度、室1相対湿度、室1絶対湿度、室2温度、室2相対湿度、室2絶対湿度）
     """
-    variables = ['room1_temp', 'room1_rh', 'room2_temp', 'room2_rh']
+    variables = ['room1_temp', 'room1_rh', 'room1_ah', 'room2_temp', 'room2_rh', 'room2_ah']
 
-    fig, axes = plt.subplots(2, 2, figsize=FIGURE_SIZE_QUAD, dpi=FIGURE_DPI)
+    fig, axes = plt.subplots(2, 3, figsize=(18, 10), dpi=FIGURE_DPI)
     axes = axes.flatten()
 
     if group_by == 'wall':
@@ -79,11 +79,11 @@ def plot_four_panel_comparison(
     # 全体タイトル
     filter_str = ', '.join([f"{k}={v}" for k, v in filter_dict.items()]) if filter_dict else '全条件'
     group_name = {'wall': '壁構造', 'opening': '換気量', 'climate': '気候'}[group_by]
-    fig.suptitle(f'4パネル周波数応答比較 - {group_name}別 ({filter_str})', fontsize=14)
+    fig.suptitle(f'6パネル周波数応答比較 - {group_name}別 ({filter_str})', fontsize=14)
 
     plt.tight_layout()
 
-    filename = f'4パネル比較_{group_name}別_{filter_str.replace(", ", "_").replace("=", "")}.png'
+    filename = f'6パネル比較_{group_name}別_{filter_str.replace(", ", "_").replace("=", "")}.png'
     output_path = output_dir / filename
     plt.savefig(output_path, dpi=FIGURE_DPI, bbox_inches='tight')
     plt.close()

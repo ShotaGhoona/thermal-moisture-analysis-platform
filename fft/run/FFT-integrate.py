@@ -19,8 +19,10 @@ import pandas as pd
 SPECTRUM_FILES = [
     'spectrum_room1_temp',
     'spectrum_room1_rh',
+    'spectrum_room1_ah',
     'spectrum_room2_temp',
     'spectrum_room2_rh',
+    'spectrum_room2_ah',
 ]
 
 # =============================================================================

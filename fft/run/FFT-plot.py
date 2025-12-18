@@ -121,7 +121,7 @@ def main():
     # 1. 周波数応答グラフ（全パターン比較）
     # =========================================================================
     logger.info("1. 周波数応答グラフ（全パターン比較）")
-    for variable in ['room1_temp', 'room1_rh', 'room2_temp', 'room2_rh']:
+    for variable in ['room1_temp', 'room1_rh', 'room1_ah', 'room2_temp', 'room2_rh', 'room2_ah']:
         for value_type in ['amplitude', 'phase']:
             try:
                 path = plot_frequency_response_all(
@@ -138,7 +138,7 @@ def main():
     logger.info("2. 壁構造別比較グラフ")
     for climate in climates:
         for opening in openings:
-            for variable in ['room1_temp', 'room1_rh']:
+            for variable in ['room1_temp', 'room1_rh', 'room1_ah']:
                 try:
                     path = plot_comparison_by_wall(
                         integrate_dir, output_dirs['wall_comparison'], variable, climate, opening
@@ -154,7 +154,7 @@ def main():
     logger.info("3. 換気量別比較グラフ")
     for climate in climates:
         for wall in walls:
-            for variable in ['room1_temp', 'room1_rh']:
+            for variable in ['room1_temp', 'room1_rh', 'room1_ah']:
                 try:
                     path = plot_comparison_by_opening(
                         integrate_dir, output_dirs['opening_comparison'], variable, climate, wall
@@ -199,7 +199,7 @@ def main():
     # 5. ヒートマップ
     # =========================================================================
     logger.info("5. ヒートマップ")
-    for variable in ['room1_temp', 'room1_rh', 'room2_temp', 'room2_rh']:
+    for variable in ['room1_temp', 'room1_rh', 'room1_ah', 'room2_temp', 'room2_rh', 'room2_ah']:
         try:
             path = plot_heatmap(integrate_dir, output_dirs['heatmap'], variable)
             logger.info(f"   → {path.name}")
@@ -212,7 +212,7 @@ def main():
     # =========================================================================
     logger.info("6. 周期別棒グラフ")
     target_periods = [1.0, 7.0, 30.0]  # 日周期、週周期、月周期
-    for variable in ['room1_temp', 'room1_rh']:
+    for variable in ['room1_temp', 'room1_rh', 'room1_ah']:
         for period in target_periods:
             try:
                 path = plot_bar_by_period(

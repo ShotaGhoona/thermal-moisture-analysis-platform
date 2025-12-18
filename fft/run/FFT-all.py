@@ -102,7 +102,7 @@ class FFTBatchAnalyzer:
         シミュレーション出力CSVの読み込み
 
         Returns:
-            dict: {'room1': {'temp': array, 'rh': array}, 'room2': {...}, 'sampling_rate': float}
+            dict: {'room1': {'temp': array, 'rh': array, 'ah': array}, 'room2': {...}, 'sampling_rate': float}
         """
         csv_path = case_dir / 'result_all_rooms.csv'
 
@@ -121,10 +121,12 @@ class FFTBatchAnalyzer:
             'room1': {
                 'temp': df[('room1', 'temp')].dropna().values,
                 'rh': df[('room1', 'rh')].dropna().values,
+                'ah': df[('room1', 'ah')].dropna().values,
             },
             'room2': {
                 'temp': df[('room2', 'temp')].dropna().values,
                 'rh': df[('room2', 'rh')].dropna().values,
+                'ah': df[('room2', 'ah')].dropna().values,
             },
             'sampling_rate': sampling_rate,
             'datetime_index': df.index,
@@ -230,7 +232,7 @@ class FFTBatchAnalyzer:
             all_features['climate'] = result['climate']
 
             for room in ['room1', 'room2']:
-                for var in ['temp', 'rh']:
+                for var in ['temp', 'rh', 'ah']:
                     signal = data[room][var]
                     key = f'{room}_{var}'
 
@@ -294,14 +296,16 @@ class FFTBatchAnalyzer:
 
     def _save_plots(self, output_dir: Path, fft_results: dict, case_name: str):
         """プロットの保存"""
-        fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+        fig, axes = plt.subplots(2, 3, figsize=(18, 10))
         fig.suptitle(f'FFT Analysis: {case_name}', fontsize=14)
 
         plot_configs = [
             ('room1_temp', 'Room1 Temperature', axes[0, 0]),
             ('room1_rh', 'Room1 Relative Humidity', axes[0, 1]),
+            ('room1_ah', 'Room1 Absolute Humidity', axes[0, 2]),
             ('room2_temp', 'Room2 Temperature', axes[1, 0]),
             ('room2_rh', 'Room2 Relative Humidity', axes[1, 1]),
+            ('room2_ah', 'Room2 Absolute Humidity', axes[1, 2]),
         ]
 
         for key, title, ax in plot_configs:
