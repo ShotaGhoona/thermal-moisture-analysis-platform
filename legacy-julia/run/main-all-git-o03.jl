@@ -85,7 +85,7 @@ const LONS = 135.0                                  # 地方標準時の経度
 
 # 出力設定
 const OUTPUT_BASE_DIR = "output_data"
-const BATCH_DIR_NAME = "batch_all"
+const BATCH_DIR_NAME = "batch_all_o03"
 const DATE_STAMP = Dates.format(now(), "mmdd")      # 実行日の月日（4桁）
 
 #=============================================================================
