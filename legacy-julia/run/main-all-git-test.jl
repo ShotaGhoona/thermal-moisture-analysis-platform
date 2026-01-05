@@ -263,10 +263,8 @@ function main()
     case_output_dir = joinpath(batch_dir, case_id)
     mkpath(case_output_dir)
 
-    # ロガー設定
-    output_data_dir = joinpath(PROJECT_DIR, "output_data")
-    relative_output = case_output_dir[length(output_data_dir)+2:end]
-    relative_output = replace(relative_output, "\\" => "/")
+    # ロガー設定（OS非依存のパス生成）
+    relative_output = BATCH_DIR_NAME * "/" * DATE_STAMP * "/" * case_id
 
     logger_rooms = set_logger(
         relative_output * "/result_all_rooms",
