@@ -1,0 +1,16 @@
+[2025-12-24 18:03:24] ════════════════════════════════════════════════════════
+[2025-12-24 18:03:24] 🚀 バッチ実行開始
+[2025-12-24 18:03:24]    総パターン数: 25
+[2025-12-24 18:03:24]    スキップ済み: 0
+[2025-12-24 18:03:24] ════════════════════════════════════════════════════════
+[2025-12-24 18:03:24] 開始: w01-base_o01-base_okinawa
+[2025-12-25 01:24:11] ❌ 失敗: w01-base_o01-base_okinawa - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2025-12-25 01:24:12] 開始: w01-base_o02-low_okinawa
+[2025-12-25 07:40:29] ❌ 失敗: w01-base_o02-low_okinawa - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2025-12-25 07:40:29] 開始: w01-base_o03-high_okinawa
+[2025-12-25 13:49:38] ❌ 失敗: w01-base_o03-high_okinawa - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2025-12-25 13:49:38] 開始: w01-base_o04-none_okinawa
+[2025-12-25 22:49:30] ❌ 失敗: w01-base_o04-none_okinawa - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2025-12-25 22:49:30] 開始: w01-base_o05-storage_okinawa
+[2025-12-26 07:16:14] ❌ 失敗: w01-base_o05-storage_okinawa - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2025-12-26 07:16:14] 開始: w02-inner_o01-base_okinawa

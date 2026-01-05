@@ -60,9 +60,9 @@ const OPENING_PATTERNS = [
 
 # 気候パターン
 const CLIMATE_PATTERNS = [
-    (id="kyoto",   file="climate_data_kyoto.csv",   name="京都", lon=135.768, phi=35.012),
+    # (id="kyoto",   file="climate_data_kyoto.csv",   name="京都", lon=135.768, phi=35.012),
     # (id="okinawa", file="climate_data_okinawa.csv", name="沖縄", lon=127.681, phi=26.212),
-    # (id="sapporo", file="climate_data_sapporo.csv", name="札幌", lon=141.347, phi=43.064),
+    (id="sapporo", file="climate_data_sapporo.csv", name="札幌", lon=141.347, phi=43.064),
 ]
 
 # 室条件（固定）
@@ -80,7 +80,7 @@ const LONS = 135.0                                  # 地方標準時の経度
 
 # 出力設定
 const OUTPUT_BASE_DIR = "output_data"
-const BATCH_DIR_NAME = "batch_all"
+const BATCH_DIR_NAME = "batch_all_3"
 const DATE_STAMP = Dates.format(now(), "mmdd")      # 実行日の月日（4桁）
 
 #=============================================================================
