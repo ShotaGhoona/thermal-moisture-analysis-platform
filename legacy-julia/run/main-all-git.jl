@@ -496,17 +496,8 @@ function run_single_simulation(wall, opening, climate, output_dir::String, case_
 
     # ロガー設定
     tprintln("   📝 ロガー設定...")
-    # クロスプラットフォーム対応: output_data以下の相対パスを抽出
-    output_data_dir = joinpath(PROJECT_DIR, "output_data")
-    relative_output = if startswith(output_dir, output_data_dir)
-        # output_data_dir の長さ + パス区切り文字1文字を除去
-        output_dir[length(output_data_dir)+2:end]
-    else
-        # フォールバック: ディレクトリ名のみを使用
-        basename(output_dir)
-    end
-    # パス区切り文字を正規化（Windowsの\を/に変換）
-    relative_output = replace(relative_output, "\\" => "/")
+    # OS非依存のパス生成
+    relative_output = BATCH_DIR_NAME * "/" * DATE_STAMP * "/" * case_id
 
     logger_rooms = set_logger(
         relative_output * "/result_all_rooms",

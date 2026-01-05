@@ -466,14 +466,8 @@ function run_single_simulation(wall, opening, climate, output_dir::String, case_
     case_log(output_dir, "  外気温: $(round(temp(network_model.climate) - 273.15, digits=1)) ℃")
     case_log(output_dir, "  外気湿度: $(round(rh(network_model.climate) * 100, digits=0)) %")
 
-    # ロガー設定（クロスプラットフォーム対応）
-    output_data_dir = joinpath(PROJECT_DIR, "output_data")
-    relative_output = if startswith(output_dir, output_data_dir)
-        output_dir[length(output_data_dir)+2:end]
-    else
-        basename(output_dir)
-    end
-    relative_output = replace(relative_output, "\\" => "/")
+    # OS非依存のパス生成
+    relative_output = BATCH_DIR_NAME * "/" * DATE_STAMP * "/" * case_id
 
     logger_rooms = set_logger(
         relative_output * "/result_all_rooms",
