@@ -4,11 +4,11 @@ $env:Path += ";C:\Program Files\Git\cmd"
 $env:Path += ";C:\Program Files\Git\cmd"
 $env:Path += ";C:\Users\ogura-labo\AppData\Local\Programs\Julia-1.11.2\bin"
 cd legacy-julia
-julia run/main-all-git-o01.jl
-julia run/main-all-git-o02.jl
-julia run/main-all-git-o03.jl
-julia run/main-all-git-o04.jl
-julia run/main-all-git-o05.jl
+julia legacy-julia/run/main-all-git-o01.jl
+julia legacy-julia/run/main-all-git-o02.jl
+julia legacy-julia/run/main-all-git-o03.jl
+julia legacy-julia/run/main-all-git-o04.jl
+julia legacy-julia/run/main-all-git-o05.jl
 
 
 ERROR: LoadError: SystemError: opening file "./output_data/output_data/batch_test/0105_1456/w01-base_o01-base_kyoto/result_all_rooms.csv": No such file or directory
