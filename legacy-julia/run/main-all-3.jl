@@ -60,9 +60,9 @@ const OPENING_PATTERNS = [
 
 # 気候パターン
 const CLIMATE_PATTERNS = [
-    (id="kyoto",   file="climate_data_kyoto.csv",   name="京都", lon=135.768, phi=35.012),
+    # (id="kyoto",   file="climate_data_kyoto.csv",   name="京都", lon=135.768, phi=35.012),
     # (id="okinawa", file="climate_data_okinawa.csv", name="沖縄", lon=127.681, phi=26.212),
-    # (id="sapporo", file="climate_data_sapporo.csv", name="札幌", lon=141.347, phi=43.064),
+    (id="sapporo", file="climate_data_sapporo.csv", name="札幌", lon=141.347, phi=43.064),
 ]
 
 # 室条件（固定）
@@ -80,7 +80,7 @@ const LONS = 135.0                                  # 地方標準時の経度
 
 # 出力設定
 const OUTPUT_BASE_DIR = "output_data"
-const BATCH_DIR_NAME = "batch_all"
+const BATCH_DIR_NAME = "batch_all_3"
 const DATE_STAMP = Dates.format(now(), "mmdd")      # 実行日の月日（4桁）
 
 #=============================================================================
@@ -461,8 +461,17 @@ function run_single_simulation(wall, opening, climate, output_dir::String, case_
 
     # ロガー設定
     tprintln("   📝 ロガー設定...")
-    # OS非依存のパス生成
-    relative_output = BATCH_DIR_NAME * "/" * DATE_STAMP * "/" * case_id
+    # クロスプラットフォーム対応: output_data以下の相対パスを抽出
+    output_data_dir = joinpath(PROJECT_DIR, "output_data")
+    relative_output = if startswith(output_dir, output_data_dir)
+        # output_data_dir の長さ + パス区切り文字1文字を除去
+        output_dir[length(output_data_dir)+2:end]
+    else
+        # フォールバック: ディレクトリ名のみを使用
+        basename(output_dir)
+    end
+    # パス区切り文字を正規化（Windowsの\を/に変換）
+    relative_output = replace(relative_output, "\\" => "/")
 
     logger_rooms = set_logger(
         relative_output * "/result_all_rooms",

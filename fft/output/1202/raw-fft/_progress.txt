@@ -1,0 +1,11 @@
+FFT一括解析完了
+解析日時: 2025-12-18 13:35:01
+入力: ../../legacy-julia/output_data/batch_all/1202
+出力: /Users/yamashitashota/Doc/ghoona/uni/thermal-analysis/fft/output/1202/raw-fft
+ケース数: 3
+成功: 3
+
+各ケース:
+  ✓ w01-base_o01-base_kyoto
+  ✓ w01-base_o02-low_kyoto
+  ✓ w01-base_o03-high_kyoto
