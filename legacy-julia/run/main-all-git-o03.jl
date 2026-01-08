@@ -11,7 +11,7 @@
     - 気候ごとにまとめて実行（京都→沖縄→札幌の順）
     - 進捗管理ファイルで状況確認可能
     - エラー発生時も続行し、後で確認可能
-    - 中断後の再開機能（完了済みパターンはスキップ）
+    - 中断後の再開機能（RUN_IDが同じなら完了済みパターンをスキップ）
     - ターミナル出力をログファイルに保存
     - 【追加】1パターン完了ごとにGitHubへ自動Push
 
@@ -20,7 +20,7 @@
     - git push失敗時も計算は継続
 
 出力先:
-    output_data/batch_all/{MMDD}/
+    output_data/batch_all_o03/{RUN_ID}/
     ├── _progress.txt          # 進捗状況（人間可読）
     ├── _batch_log.txt         # 実行ログ
     ├── _terminal_log.txt      # ターミナル出力
@@ -86,7 +86,7 @@ const LONS = 135.0                                  # 地方標準時の経度
 # 出力設定
 const OUTPUT_BASE_DIR = "output_data"
 const BATCH_DIR_NAME = "batch_all_o03"
-const DATE_STAMP = Dates.format(now(), "mmdd")      # 実行日の月日（4桁）
+const RUN_ID = "run03"  # 実行ID（任意の文字列、再開時は同じ値を使用）
 
 #=============================================================================
                            起動メッセージ
@@ -100,6 +100,7 @@ println("🚀 ══════════════════════
 println("🚀  起動時刻: ", now())
 println("🚀  スクリプト: ", SCRIPT_DIR)
 println("🚀  プロジェクト: ", PROJECT_DIR)
+println("🚀  📁 RUN_ID: ", RUN_ID)
 println("🚀  📤 Git Push: 1パターン完了ごとに自動push")
 println("🚀 ════════════════════════════════════════════════════════════════")
 println()
@@ -170,9 +171,9 @@ end
                            ユーティリティ関数
 =============================================================================#
 
-"""バッチディレクトリのパスを取得（日付フォルダ付き）"""
+"""バッチディレクトリのパスを取得（RUN_IDフォルダ付き）"""
 function get_batch_dir()
-    return joinpath(PROJECT_DIR, OUTPUT_BASE_DIR, BATCH_DIR_NAME, DATE_STAMP)
+    return joinpath(PROJECT_DIR, OUTPUT_BASE_DIR, BATCH_DIR_NAME, RUN_ID)
 end
 
 """ログファイルに書き込み"""
@@ -497,7 +498,7 @@ function run_single_simulation(wall, opening, climate, output_dir::String, case_
     # ロガー設定
     tprintln("   📝 ロガー設定...")
     # OS非依存のパス生成
-    relative_output = BATCH_DIR_NAME * "/" * DATE_STAMP * "/" * case_id
+    relative_output = BATCH_DIR_NAME * "/" * RUN_ID * "/" * case_id
 
     logger_rooms = set_logger(
         relative_output * "/result_all_rooms",
