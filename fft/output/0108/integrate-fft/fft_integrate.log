@@ -1,0 +1,29 @@
+2026-01-08 14:46:24,261 - INFO - ============================================================
+2026-01-08 14:46:24,261 - INFO - FFT統合開始
+2026-01-08 14:46:24,261 - INFO - 入力: ../output/0108/binned-fft
+2026-01-08 14:46:24,261 - INFO - 出力: ../output/0108/integrate-fft
+2026-01-08 14:46:24,261 - INFO - ============================================================
+2026-01-08 14:46:24,262 - INFO - 検出ケース数: 5
+2026-01-08 14:46:24,262 - INFO - 統合中: spectrum_room1_temp
+2026-01-08 14:46:24,267 - INFO -   → spectrum_room1_temp_amplitude.csv (5パターン)
+2026-01-08 14:46:24,267 - INFO -   → spectrum_room1_temp_phase.csv (5パターン)
+2026-01-08 14:46:24,267 - INFO - 統合中: spectrum_room1_rh
+2026-01-08 14:46:24,270 - INFO -   → spectrum_room1_rh_amplitude.csv (5パターン)
+2026-01-08 14:46:24,270 - INFO -   → spectrum_room1_rh_phase.csv (5パターン)
+2026-01-08 14:46:24,270 - INFO - 統合中: spectrum_room1_ah
+2026-01-08 14:46:24,272 - INFO -   → spectrum_room1_ah_amplitude.csv (5パターン)
+2026-01-08 14:46:24,272 - INFO -   → spectrum_room1_ah_phase.csv (5パターン)
+2026-01-08 14:46:24,272 - INFO - 統合中: spectrum_room2_temp
+2026-01-08 14:46:24,275 - INFO -   → spectrum_room2_temp_amplitude.csv (5パターン)
+2026-01-08 14:46:24,275 - INFO -   → spectrum_room2_temp_phase.csv (5パターン)
+2026-01-08 14:46:24,275 - INFO - 統合中: spectrum_room2_rh
+2026-01-08 14:46:24,277 - INFO -   → spectrum_room2_rh_amplitude.csv (5パターン)
+2026-01-08 14:46:24,277 - INFO -   → spectrum_room2_rh_phase.csv (5パターン)
+2026-01-08 14:46:24,277 - INFO - 統合中: spectrum_room2_ah
+2026-01-08 14:46:24,279 - INFO -   → spectrum_room2_ah_amplitude.csv (5パターン)
+2026-01-08 14:46:24,279 - INFO -   → spectrum_room2_ah_phase.csv (5パターン)
+2026-01-08 14:46:24,389 - INFO - Excel出力: all_spectrums.xlsx (12シート)
+2026-01-08 14:46:24,389 - INFO - ============================================================
+2026-01-08 14:46:24,389 - INFO - FFT統合完了
+2026-01-08 14:46:24,389 - INFO - 出力: ../output/0108/integrate-fft
+2026-01-08 14:46:24,389 - INFO - ============================================================

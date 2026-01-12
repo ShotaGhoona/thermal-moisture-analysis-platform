@@ -61,23 +61,52 @@ CHART_COL_OPENING = "AK"  # 換気量別
 CHART_ROW_SPACING = 30
 
 # =============================================================================
-# データ列の定義（地域別・換気量別）
+# データ列の定義（動的生成用）
 # =============================================================================
 
-# 地域別グループ（換気量比較用）
-CLIMATE_COLUMNS = {
-    'kyoto': [2, 5, 8, 11],     # B, E, H, K
-    'okinawa': [3, 6, 9, 12],   # C, F, I, L
-    'sapporo': [4, 7, 10, 13],  # D, G, J, M
-}
+def parse_column_groups(ws):
+    """
+    列名からグループを動的に生成
+    列名形式: w01-base_o01-base_kyoto
+    Returns: (climate_groups, opening_groups)
+    """
+    max_col = ws.max_column
 
-# 換気量別グループ（地域比較用）
-OPENING_COLUMNS = {
-    'o01-base': [2, 3, 4],      # B, C, D
-    'o02-low': [5, 6, 7],       # E, F, G
-    'o03-high': [8, 9, 10],     # H, I, J
-    'o04-none': [11, 12, 13],   # K, L, M
-}
+    # 列名を解析
+    columns_info = []
+    for col in range(2, max_col + 1):
+        name = ws.cell(row=1, column=col).value
+        if name:
+            parts = name.split('_')
+            if len(parts) >= 3:
+                wall = parts[0]      # w01-base
+                opening = parts[1]   # o01-base
+                climate = parts[2]   # kyoto
+                columns_info.append({
+                    'col': col,
+                    'wall': wall,
+                    'opening': opening,
+                    'climate': climate,
+                    'name': name
+                })
+
+    # 地域別グループ（同じ地域の列をまとめる → 換気量比較用）
+    climate_groups = {}
+    for info in columns_info:
+        climate = info['climate']
+        if climate not in climate_groups:
+            climate_groups[climate] = []
+        climate_groups[climate].append(info['col'])
+
+    # 換気量別グループ（同じ換気量の列をまとめる → 地域比較用）
+    opening_groups = {}
+    for info in columns_info:
+        opening = info['opening']
+        if opening not in opening_groups:
+            opening_groups[opening] = []
+        opening_groups[opening].append(info['col'])
+
+    return climate_groups, opening_groups
 
 # =============================================================================
 # 関数
@@ -134,7 +163,7 @@ def create_chart(ws, sheet_name: str, columns: list, title_suffix: str, max_row:
     return chart
 
 
-def add_chart_to_sheet(ws, sheet_name: str):
+def add_chart_to_sheet(ws, sheet_name: str, simple: bool = False):
     """シートにグラフを追加"""
 
     # データ範囲を取得（空データの行を除外）
@@ -150,19 +179,34 @@ def add_chart_to_sheet(ws, sheet_name: str):
     chart_all = create_chart(ws, sheet_name, all_cols, "(全体)", max_row)
     ws.add_chart(chart_all, f"{CHART_COL_ALL}2")
 
+    # simpleモードの場合は全体グラフのみ
+    if simple:
+        return True
+
+    # 列名からグループを動的に生成
+    climate_groups, opening_groups = parse_column_groups(ws)
+
     # === 2列目: 地域別グラフ（換気量比較用） ===
-    for i, (climate_key, cols) in enumerate(CLIMATE_COLUMNS.items()):
-        climate_name = CLIMATE_NAMES.get(climate_key, climate_key)
-        row = 2 + i * CHART_ROW_SPACING
-        chart = create_chart(ws, sheet_name, cols, f"({climate_name})", max_row)
-        ws.add_chart(chart, f"{CHART_COL_CLIMATE}{row}")
+    # 地域が複数ある場合のみ生成
+    if len(climate_groups) > 1:
+        for i, (climate_key, cols) in enumerate(climate_groups.items()):
+            if len(cols) < 2:
+                continue
+            climate_name = CLIMATE_NAMES.get(climate_key, climate_key)
+            row = 2 + i * CHART_ROW_SPACING
+            chart = create_chart(ws, sheet_name, cols, f"({climate_name})", max_row)
+            ws.add_chart(chart, f"{CHART_COL_CLIMATE}{row}")
 
     # === 3列目: 換気量別グラフ（地域比較用） ===
-    for i, (opening_key, cols) in enumerate(OPENING_COLUMNS.items()):
-        opening_name = OPENING_NAMES.get(opening_key, opening_key)
-        row = 2 + i * CHART_ROW_SPACING
-        chart = create_chart(ws, sheet_name, cols, f"({opening_name})", max_row)
-        ws.add_chart(chart, f"{CHART_COL_OPENING}{row}")
+    # 換気量が複数ある場合のみ生成
+    if len(opening_groups) > 1:
+        for i, (opening_key, cols) in enumerate(opening_groups.items()):
+            if len(cols) < 2:
+                continue
+            opening_name = OPENING_NAMES.get(opening_key, opening_key)
+            row = 2 + i * CHART_ROW_SPACING
+            chart = create_chart(ws, sheet_name, cols, f"({opening_name})", max_row)
+            ws.add_chart(chart, f"{CHART_COL_OPENING}{row}")
 
     return True
 
@@ -173,6 +217,7 @@ def main():
     )
     parser.add_argument('excel_path', help='対象のExcelファイル')
     parser.add_argument('--output', '-o', help='出力ファイル名（省略時は_chart付きで保存）')
+    parser.add_argument('--simple', '-s', action='store_true', help='全体グラフのみ生成（地域別・換気量別グラフをスキップ）')
 
     args = parser.parse_args()
 
@@ -195,7 +240,7 @@ def main():
     for sheet_name in wb.sheetnames:
         print(f"  処理中: {sheet_name}")
         ws = wb[sheet_name]
-        add_chart_to_sheet(ws, sheet_name)
+        add_chart_to_sheet(ws, sheet_name, simple=args.simple)
 
     # 保存
     wb.save(output_path)
