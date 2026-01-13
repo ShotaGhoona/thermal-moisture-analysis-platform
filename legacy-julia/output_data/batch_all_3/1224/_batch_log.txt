@@ -1,0 +1,16 @@
+[2025-12-24 18:04:31] ════════════════════════════════════════════════════════
+[2025-12-24 18:04:31] 🚀 バッチ実行開始
+[2025-12-24 18:04:31]    総パターン数: 25
+[2025-12-24 18:04:31]    スキップ済み: 0
+[2025-12-24 18:04:31] ════════════════════════════════════════════════════════
+[2025-12-24 18:04:31] 開始: w01-base_o01-base_sapporo
+[2025-12-25 01:17:22] ❌ 失敗: w01-base_o01-base_sapporo - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2025-12-25 01:17:24] 開始: w01-base_o02-low_sapporo
+[2025-12-25 07:25:46] ❌ 失敗: w01-base_o02-low_sapporo - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2025-12-25 07:25:46] 開始: w01-base_o03-high_sapporo
+[2025-12-25 13:28:31] ❌ 失敗: w01-base_o03-high_sapporo - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2025-12-25 13:28:31] 開始: w01-base_o04-none_sapporo
+[2025-12-25 22:15:59] ❌ 失敗: w01-base_o04-none_sapporo - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2025-12-25 22:16:00] 開始: w01-base_o05-storage_sapporo
+[2025-12-26 06:40:24] ❌ 失敗: w01-base_o05-storage_sapporo - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2025-12-26 06:40:24] 開始: w02-inner_o01-base_sapporo

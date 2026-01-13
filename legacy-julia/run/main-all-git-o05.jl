@@ -85,7 +85,7 @@ const LONS = 135.0                                  # 地方標準時の経度
 
 # 出力設定
 const OUTPUT_BASE_DIR = "output_data"
-const BATCH_DIR_NAME = "batch_all_o05"
+const BATCH_DIR_NAME = "batch_all"
 const RUN_ID = "run05"  # 実行ID（任意の文字列、再開時は同じ値を使用）
 
 #=============================================================================

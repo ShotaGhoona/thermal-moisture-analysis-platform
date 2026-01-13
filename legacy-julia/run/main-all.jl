@@ -61,8 +61,8 @@ const OPENING_PATTERNS = [
 # 気候パターン
 const CLIMATE_PATTERNS = [
     (id="kyoto",   file="climate_data_kyoto.csv",   name="京都", lon=135.768, phi=35.012),
-    (id="okinawa", file="climate_data_okinawa.csv", name="沖縄", lon=127.681, phi=26.212),
-    (id="sapporo", file="climate_data_sapporo.csv", name="札幌", lon=141.347, phi=43.064),
+    # (id="okinawa", file="climate_data_okinawa.csv", name="沖縄", lon=127.681, phi=26.212),
+    # (id="sapporo", file="climate_data_sapporo.csv", name="札幌", lon=141.347, phi=43.064),
 ]
 
 # 室条件（固定）

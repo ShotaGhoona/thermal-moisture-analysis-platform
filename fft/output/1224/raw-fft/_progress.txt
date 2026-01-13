@@ -1,0 +1,13 @@
+FFT一括解析完了
+解析日時: 2025-12-26 01:15:42
+入力: legacy-julia/output_data/batch_all_3/1224
+出力: /Users/yamashitashota/Doc/ghoona/uni/thermal-analysis/fft/output/1224/raw-fft
+ケース数: 5
+成功: 5
+
+各ケース:
+  ✓ w01-base_o01-base_sapporo
+  ✓ w01-base_o02-low_sapporo
+  ✓ w01-base_o03-high_sapporo
+  ✓ w01-base_o04-none_sapporo
+  ✓ w01-base_o05-storage_sapporo

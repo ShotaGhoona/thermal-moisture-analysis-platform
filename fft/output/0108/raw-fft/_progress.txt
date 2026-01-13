@@ -1,0 +1,9 @@
+FFT一括解析完了
+解析日時: 2026-01-08 14:46:23
+入力: ../../legacy-julia/output_data/batch_all/run05
+出力: ../output/0108/raw-fft
+ケース数: 1
+成功: 1
+
+各ケース:
+  ✓ w01-base_o05-storage_kyoto
