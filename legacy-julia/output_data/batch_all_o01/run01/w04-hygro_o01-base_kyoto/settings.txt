@@ -1,0 +1,31 @@
+🚀 ════════════════════════════════════════════════════════
+🚀  計算設定
+🚀 ════════════════════════════════════════════════════════
+
+📊 パターン情報:
+   ├─ ケースID: w04-hygro_o01-base_kyoto
+   ├─ 🧱 壁体:   RC内断熱+調湿 (w04-hygro)
+   ├─ 🚪 換気:   基準換気 (o01-base)
+   └─ 🌤️  気候:   京都 (kyoto)
+
+📄 入力ファイル:
+   ├─ Room:    input_data\building_network_model_production\01\room-condition\01-base-model.csv
+   ├─ Wall:    input_data\building_network_model_production\01\wall-condition\04-rc-inner-insulation-hygroscopic.csv
+   ├─ Opening: input_data\building_network_model_production\01\opening-condition\01-base-model.csv
+   └─ Climate: input_data\building_network_model_production\climate-data\climate_data_kyoto.csv
+
+⏱️  計算条件:
+   ├─ 時間刻み dt: 0.1 hour
+   ├─ 開始時刻: 2022-04-01T00:00:00
+   ├─ 終了時刻: 2023-04-01T00:00:00
+   └─ 出力間隔: 10.0 hour
+
+📍 位置情報:
+   ├─ 都市: 京都
+   ├─ 経度: 135.768
+   ├─ 緯度: 35.012
+   └─ 標準時経度: 135.0
+
+════════════════════════════════════════════════════════════
+
+⏰ 実行開始: 2026-01-11 19:47:15
