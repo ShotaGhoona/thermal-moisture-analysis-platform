@@ -1,0 +1,12 @@
+FFT一括解析完了
+解析日時: 2026-01-13 12:44:54
+入力: /Users/yamashitashota/Doc/ghoona/uni/thermal-analysis/legacy-julia/output_data/batch_all_o05/run05
+出力: /Users/yamashitashota/Doc/ghoona/uni/thermal-analysis/fft/output/run05/raw-fft
+ケース数: 4
+成功: 4
+
+各ケース:
+  ✓ w01-base_o05-storage_kyoto
+  ✓ w02-inner_o05-storage_kyoto
+  ✓ w03-outer_o05-storage_kyoto
+  ✓ w04-hygro_o05-storage_kyoto
