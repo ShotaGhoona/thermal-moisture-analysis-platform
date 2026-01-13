@@ -1,0 +1,4 @@
+case_id,wall_id,wall_name,opening_id,opening_name,climate_id,climate_name,status,duration_sec,start_time,end_time,error_message
+w01-base_o04-none_kyoto,w01-base,RC単体,o04-none,無換気,kyoto,京都,FAILED,49847.018,2026-01-08 14:39:59,2026-01-09 04:30:46,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w02-inner_o04-none_kyoto,w02-inner,RC内断熱,o04-none,無換気,kyoto,京都,FAILED,116032.208,2026-01-09 04:30:48,2026-01-10 12:44:40,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w03-outer_o04-none_kyoto,w03-outer,RC外断熱,o04-none,無換気,kyoto,京都,FAILED,111499.424,2026-01-10 12:44:41,2026-01-11 19:43:00,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"

@@ -1,0 +1,31 @@
+🚀 ════════════════════════════════════════════════════════
+🚀  計算設定
+🚀 ════════════════════════════════════════════════════════
+
+📊 パターン情報:
+   ├─ ケースID: w02-inner_o03-high_kyoto
+   ├─ 🧱 壁体:   RC内断熱 (w02-inner)
+   ├─ 🚪 換気:   高換気 (o03-high)
+   └─ 🌤️  気候:   京都 (kyoto)
+
+📄 入力ファイル:
+   ├─ Room:    input_data\building_network_model_production\01\room-condition\01-base-model.csv
+   ├─ Wall:    input_data\building_network_model_production\01\wall-condition\02-rc-inner-insulation.csv
+   ├─ Opening: input_data\building_network_model_production\01\opening-condition\03-high-ventilation-model.csv
+   └─ Climate: input_data\building_network_model_production\climate-data\climate_data_kyoto.csv
+
+⏱️  計算条件:
+   ├─ 時間刻み dt: 0.1 hour
+   ├─ 開始時刻: 2022-04-01T00:00:00
+   ├─ 終了時刻: 2023-04-01T00:00:00
+   └─ 出力間隔: 10.0 hour
+
+📍 位置情報:
+   ├─ 都市: 京都
+   ├─ 経度: 135.768
+   ├─ 緯度: 35.012
+   └─ 標準時経度: 135.0
+
+════════════════════════════════════════════════════════════
+
+⏰ 実行開始: 2026-01-09 04:46:54

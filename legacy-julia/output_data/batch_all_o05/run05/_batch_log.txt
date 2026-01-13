@@ -1,0 +1,12 @@
+[2026-01-08 14:40:18] ════════════════════════════════════════════════════════
+[2026-01-08 14:40:18] 🚀 バッチ実行開始
+[2026-01-08 14:40:18]    総パターン数: 15
+[2026-01-08 14:40:18]    スキップ済み: 0
+[2026-01-08 14:40:18] ════════════════════════════════════════════════════════
+[2026-01-08 14:40:18] 開始: w01-base_o05-storage_kyoto
+[2026-01-09 04:26:47] ❌ 失敗: w01-base_o05-storage_kyoto - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-09 04:26:48] 開始: w02-inner_o05-storage_kyoto
+[2026-01-10 12:30:32] ❌ 失敗: w02-inner_o05-storage_kyoto - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-10 12:30:33] 開始: w03-outer_o05-storage_kyoto
+[2026-01-11 19:21:10] ❌ 失敗: w03-outer_o05-storage_kyoto - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-11 19:21:10] 開始: w04-hygro_o05-storage_kyoto

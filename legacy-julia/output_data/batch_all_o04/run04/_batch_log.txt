@@ -1,0 +1,12 @@
+[2026-01-08 14:39:59] ════════════════════════════════════════════════════════
+[2026-01-08 14:39:59] 🚀 バッチ実行開始
+[2026-01-08 14:39:59]    総パターン数: 15
+[2026-01-08 14:39:59]    スキップ済み: 0
+[2026-01-08 14:39:59] ════════════════════════════════════════════════════════
+[2026-01-08 14:39:59] 開始: w01-base_o04-none_kyoto
+[2026-01-09 04:30:47] ❌ 失敗: w01-base_o04-none_kyoto - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-09 04:30:48] 開始: w02-inner_o04-none_kyoto
+[2026-01-10 12:44:40] ❌ 失敗: w02-inner_o04-none_kyoto - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-10 12:44:41] 開始: w03-outer_o04-none_kyoto
+[2026-01-11 19:43:00] ❌ 失敗: w03-outer_o04-none_kyoto - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-11 19:43:00] 開始: w04-hygro_o04-none_kyoto
