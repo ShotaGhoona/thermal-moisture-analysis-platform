@@ -10,3 +10,7 @@
 [2026-01-10 12:44:41] 開始: w03-outer_o04-none_kyoto
 [2026-01-11 19:43:00] ❌ 失敗: w03-outer_o04-none_kyoto - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
 [2026-01-11 19:43:00] 開始: w04-hygro_o04-none_kyoto
+[2026-01-13 23:32:59] ❌ 失敗: w04-hygro_o04-none_kyoto - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-13 23:32:59] 開始: w05-mud_o04-none_kyoto
+[2026-01-14 14:28:23] ❌ 失敗: w05-mud_o04-none_kyoto - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-14 14:28:23] 開始: w01-base_o04-none_okinawa
