@@ -1,1 +1,2 @@
 case_id,wall_id,wall_name,opening_id,opening_name,climate_id,climate_name,status,duration_sec,start_time,end_time,error_message
+w01-base_o01-base_okinawa,w01-base,RC単体,o01-base,基準換気,okinawa,沖縄,FAILED,43986.542,2026-01-13 15:20:04,2026-01-14 03:33:11,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"

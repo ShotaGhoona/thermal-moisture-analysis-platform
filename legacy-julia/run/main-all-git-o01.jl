@@ -65,7 +65,7 @@ const OPENING_PATTERNS = [
 
 # 気候パターン
 const CLIMATE_PATTERNS = [
-    (id="kyoto",   file="climate_data_kyoto.csv",   name="京都", lon=135.768, phi=35.012),
+    # (id="kyoto",   file="climate_data_kyoto.csv",   name="京都", lon=135.768, phi=35.012),
     (id="okinawa", file="climate_data_okinawa.csv", name="沖縄", lon=127.681, phi=26.212),
     (id="sapporo", file="climate_data_sapporo.csv", name="札幌", lon=141.347, phi=43.064),
 ]
@@ -77,10 +77,10 @@ const ROOM_FILE = "01-base-model.csv"
                            計算条件
 =============================================================================#
 
-const DT = 0.1                                      # 時間刻み [hour]
+const DT = 0.1                                      # 時間刻み [sec] ※time_elapsesでMillisecond(dt*1000)として処理
 const START_DATE = DateTime(2022, 4, 1, 0, 0, 0)    # 計算開始時刻
 const END_DATE   = DateTime(2023, 4, 1, 0, 0, 0)    # 計算終了時刻（1年間）
-const OUTPUT_INTERVAL = 10.0                        # 出力間隔 [hour]
+const OUTPUT_INTERVAL = 10.0                        # 出力間隔 [min] ※logger.jlでminute(date)と比較
 const LONS = 135.0                                  # 地方標準時の経度
 
 # 出力設定

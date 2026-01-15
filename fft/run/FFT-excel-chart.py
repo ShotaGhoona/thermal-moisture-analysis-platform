@@ -22,6 +22,14 @@ from openpyxl.chart.axis import ChartLines
 sys.path.insert(0, str(Path(__file__).parent / 'visualize-script'))
 from config import CLIMATE_NAMES, OPENING_NAMES
 
+# 壁材質の表示名
+WALL_NAMES = {
+    'w01-base': '基準壁',
+    'w02-inner': '内断熱',
+    'w03-outer': '外断熱',
+    'w04-hygro': '調湿材',
+}
+
 # =============================================================================
 # Excel グラフ設定
 # =============================================================================
@@ -54,7 +62,7 @@ Y_AXIS_TITLE_PHASE = "位相 [rad]"
 
 # グラフ配置位置（列）
 CHART_COL_ALL = "O"       # 全体
-CHART_COL_CLIMATE = "Z"   # 地域別
+CHART_COL_WALL = "Z"      # 壁材質別
 CHART_COL_OPENING = "AK"  # 換気量別
 
 # グラフ配置位置（行間隔）
@@ -68,7 +76,7 @@ def parse_column_groups(ws):
     """
     列名からグループを動的に生成
     列名形式: w01-base_o01-base_kyoto
-    Returns: (climate_groups, opening_groups)
+    Returns: (wall_groups, opening_groups)
     """
     max_col = ws.max_column
 
@@ -90,15 +98,15 @@ def parse_column_groups(ws):
                     'name': name
                 })
 
-    # 地域別グループ（同じ地域の列をまとめる → 換気量比較用）
-    climate_groups = {}
+    # 壁材質別グループ（同じ壁材質の列をまとめる → 換気量比較用）
+    wall_groups = {}
     for info in columns_info:
-        climate = info['climate']
-        if climate not in climate_groups:
-            climate_groups[climate] = []
-        climate_groups[climate].append(info['col'])
+        wall = info['wall']
+        if wall not in wall_groups:
+            wall_groups[wall] = []
+        wall_groups[wall].append(info['col'])
 
-    # 換気量別グループ（同じ換気量の列をまとめる → 地域比較用）
+    # 換気量別グループ（同じ換気量の列をまとめる → 壁材質比較用）
     opening_groups = {}
     for info in columns_info:
         opening = info['opening']
@@ -106,7 +114,7 @@ def parse_column_groups(ws):
             opening_groups[opening] = []
         opening_groups[opening].append(info['col'])
 
-    return climate_groups, opening_groups
+    return wall_groups, opening_groups
 
 # =============================================================================
 # 関数
@@ -184,20 +192,20 @@ def add_chart_to_sheet(ws, sheet_name: str, simple: bool = False):
         return True
 
     # 列名からグループを動的に生成
-    climate_groups, opening_groups = parse_column_groups(ws)
+    wall_groups, opening_groups = parse_column_groups(ws)
 
-    # === 2列目: 地域別グラフ（換気量比較用） ===
-    # 地域が複数ある場合のみ生成
-    if len(climate_groups) > 1:
-        for i, (climate_key, cols) in enumerate(climate_groups.items()):
+    # === 2列目: 壁材質別グラフ（換気量比較用） ===
+    # 壁材質が複数ある場合のみ生成
+    if len(wall_groups) > 1:
+        for i, (wall_key, cols) in enumerate(wall_groups.items()):
             if len(cols) < 2:
                 continue
-            climate_name = CLIMATE_NAMES.get(climate_key, climate_key)
+            wall_name = WALL_NAMES.get(wall_key, wall_key)
             row = 2 + i * CHART_ROW_SPACING
-            chart = create_chart(ws, sheet_name, cols, f"({climate_name})", max_row)
-            ws.add_chart(chart, f"{CHART_COL_CLIMATE}{row}")
+            chart = create_chart(ws, sheet_name, cols, f"({wall_name})", max_row)
+            ws.add_chart(chart, f"{CHART_COL_WALL}{row}")
 
-    # === 3列目: 換気量別グラフ（地域比較用） ===
+    # === 3列目: 換気量別グラフ（壁材質比較用） ===
     # 換気量が複数ある場合のみ生成
     if len(opening_groups) > 1:
         for i, (opening_key, cols) in enumerate(opening_groups.items()):
@@ -217,7 +225,7 @@ def main():
     )
     parser.add_argument('excel_path', help='対象のExcelファイル')
     parser.add_argument('--output', '-o', help='出力ファイル名（省略時は_chart付きで保存）')
-    parser.add_argument('--simple', '-s', action='store_true', help='全体グラフのみ生成（地域別・換気量別グラフをスキップ）')
+    parser.add_argument('--simple', '-s', action='store_true', help='全体グラフのみ生成（壁材質別・換気量別グラフをスキップ）')
 
     args = parser.parse_args()
 
