@@ -1,0 +1,29 @@
+2026-01-15 09:36:49,916 - INFO - ============================================================
+2026-01-15 09:36:49,916 - INFO - FFT統合開始
+2026-01-15 09:36:49,916 - INFO - 入力: ../output/0115/binned-fft
+2026-01-15 09:36:49,916 - INFO - 出力: ../output/0115/integrate-fft
+2026-01-15 09:36:49,916 - INFO - ============================================================
+2026-01-15 09:36:49,916 - INFO - 検出ケース数: 30
+2026-01-15 09:36:49,916 - INFO - 統合中: spectrum_room1_temp
+2026-01-15 09:36:49,928 - INFO -   → spectrum_room1_temp_amplitude.csv (30パターン)
+2026-01-15 09:36:49,928 - INFO -   → spectrum_room1_temp_phase.csv (30パターン)
+2026-01-15 09:36:49,928 - INFO - 統合中: spectrum_room1_rh
+2026-01-15 09:36:49,938 - INFO -   → spectrum_room1_rh_amplitude.csv (30パターン)
+2026-01-15 09:36:49,938 - INFO -   → spectrum_room1_rh_phase.csv (30パターン)
+2026-01-15 09:36:49,938 - INFO - 統合中: spectrum_room1_ah
+2026-01-15 09:36:49,948 - INFO -   → spectrum_room1_ah_amplitude.csv (30パターン)
+2026-01-15 09:36:49,948 - INFO -   → spectrum_room1_ah_phase.csv (30パターン)
+2026-01-15 09:36:49,948 - INFO - 統合中: spectrum_room2_temp
+2026-01-15 09:36:49,958 - INFO -   → spectrum_room2_temp_amplitude.csv (30パターン)
+2026-01-15 09:36:49,958 - INFO -   → spectrum_room2_temp_phase.csv (30パターン)
+2026-01-15 09:36:49,958 - INFO - 統合中: spectrum_room2_rh
+2026-01-15 09:36:49,968 - INFO -   → spectrum_room2_rh_amplitude.csv (30パターン)
+2026-01-15 09:36:49,968 - INFO -   → spectrum_room2_rh_phase.csv (30パターン)
+2026-01-15 09:36:49,968 - INFO - 統合中: spectrum_room2_ah
+2026-01-15 09:36:49,978 - INFO -   → spectrum_room2_ah_amplitude.csv (30パターン)
+2026-01-15 09:36:49,978 - INFO -   → spectrum_room2_ah_phase.csv (30パターン)
+2026-01-15 09:36:50,155 - INFO - Excel出力: all_spectrums.xlsx (12シート)
+2026-01-15 09:36:50,155 - INFO - ============================================================
+2026-01-15 09:36:50,155 - INFO - FFT統合完了
+2026-01-15 09:36:50,155 - INFO - 出力: ../output/0115/integrate-fft
+2026-01-15 09:36:50,155 - INFO - ============================================================
