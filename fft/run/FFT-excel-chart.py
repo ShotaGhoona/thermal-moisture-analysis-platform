@@ -59,6 +59,8 @@ X_AXIS_TITLE = "周期 [日]"
 # Y軸タイトル
 Y_AXIS_TITLE_AMP = "振幅"
 Y_AXIS_TITLE_PHASE = "位相 [rad]"
+Y_AXIS_TITLE_RATIO = "振幅比 [-]"
+Y_AXIS_TITLE_DIFF = "位相差 [rad]"
 
 # グラフ配置位置（列）
 CHART_COL_ALL = "O"       # 全体
@@ -153,8 +155,21 @@ def create_chart(ws, sheet_name: str, columns: list, title_suffix: str, max_row:
     chart.x_axis.scaling.max = X_AXIS_MAX
     chart.x_axis.delete = False
 
-    # Y軸の設定
-    chart.y_axis.title = Y_AXIS_TITLE_AMP if "amp" in sheet_name else Y_AXIS_TITLE_PHASE
+    # Y軸の設定（シート名に応じてタイトルを変更）
+    if "ratio" in sheet_name:
+        chart.y_axis.title = Y_AXIS_TITLE_RATIO
+        # 振幅比は0〜2の範囲を想定
+        chart.y_axis.scaling.min = 0
+        chart.y_axis.scaling.max = 2
+    elif "diff" in sheet_name:
+        chart.y_axis.title = Y_AXIS_TITLE_DIFF
+        # 位相差は-π〜πの範囲
+        chart.y_axis.scaling.min = -3.5
+        chart.y_axis.scaling.max = 3.5
+    elif "amp" in sheet_name:
+        chart.y_axis.title = Y_AXIS_TITLE_AMP
+    else:
+        chart.y_axis.title = Y_AXIS_TITLE_PHASE
     chart.y_axis.delete = False
 
     # グリッド線を薄いグレーに

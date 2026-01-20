@@ -11,6 +11,7 @@ import sys
 import logging
 import argparse
 from pathlib import Path
+import numpy as np
 import pandas as pd
 
 # =============================================================================
@@ -23,6 +24,13 @@ SPECTRUM_FILES = [
     'spectrum_room2_temp',
     'spectrum_room2_rh',
     'spectrum_room2_ah',
+]
+
+# 振幅比・位相差を計算する変数ペア (室内, 外気, 出力名)
+RATIO_PAIRS = [
+    ('spectrum_room2_temp', 'spectrum_room1_temp', 'temp'),
+    ('spectrum_room2_rh', 'spectrum_room1_rh', 'rh'),
+    ('spectrum_room2_ah', 'spectrum_room1_ah', 'ah'),
 ]
 
 # =============================================================================
@@ -93,6 +101,41 @@ def integrate_spectrum(input_dir: Path, cases: list, spectrum_name: str, logger)
     phase_df.index.name = 'period_days'
 
     return amplitude_df, phase_df
+
+
+def compute_ratio_and_diff(indoor_amp_df: pd.DataFrame, outdoor_amp_df: pd.DataFrame,
+                           indoor_phase_df: pd.DataFrame, outdoor_phase_df: pd.DataFrame,
+                           logger) -> tuple:
+    """
+    振幅比と位相差を計算
+
+    Args:
+        indoor_amp_df: 室内の振幅DataFrame
+        outdoor_amp_df: 外気の振幅DataFrame
+        indoor_phase_df: 室内の位相DataFrame
+        outdoor_phase_df: 外気の位相DataFrame
+
+    Returns:
+        (ratio_df, diff_df): 振幅比と位相差のDataFrame
+    """
+    # 共通のカラム（ケース名）を取得
+    common_cols = indoor_amp_df.columns.intersection(outdoor_amp_df.columns)
+
+    if len(common_cols) == 0:
+        logger.warning("共通のケースがありません")
+        return None, None
+
+    # 振幅比 = 室内 / 外気
+    ratio_df = indoor_amp_df[common_cols] / outdoor_amp_df[common_cols]
+    ratio_df.index.name = 'period_days'
+
+    # 位相差 = 室内 - 外気（-π〜πの範囲に正規化）
+    diff_df = indoor_phase_df[common_cols] - outdoor_phase_df[common_cols]
+    # 位相差を-π〜πの範囲に正規化
+    diff_df = np.arctan2(np.sin(diff_df), np.cos(diff_df))
+    diff_df.index.name = 'period_days'
+
+    return ratio_df, diff_df
 
 
 def main():
@@ -175,7 +218,57 @@ def main():
         all_dataframes[f'{spectrum_name}_amp'] = amplitude_df
         all_dataframes[f'{spectrum_name}_phase'] = phase_df
 
+    # =================================================================
+    # 振幅比・位相差の計算（室内/外気）
+    # =================================================================
+    logger.info("-" * 60)
+    logger.info("振幅比・位相差の計算")
+
+    for indoor_name, outdoor_name, var_name in RATIO_PAIRS:
+        logger.info(f"計算中: {var_name} (室内/外気)")
+
+        # 室内と外気のデータを取得
+        indoor_amp_key = f'{indoor_name}_amp'
+        outdoor_amp_key = f'{outdoor_name}_amp'
+        indoor_phase_key = f'{indoor_name}_phase'
+        outdoor_phase_key = f'{outdoor_name}_phase'
+
+        if indoor_amp_key not in all_dataframes or outdoor_amp_key not in all_dataframes:
+            logger.warning(f"  データ不足: {var_name}")
+            continue
+
+        indoor_amp_df = all_dataframes[indoor_amp_key]
+        outdoor_amp_df = all_dataframes[outdoor_amp_key]
+        indoor_phase_df = all_dataframes[indoor_phase_key]
+        outdoor_phase_df = all_dataframes[outdoor_phase_key]
+
+        # 振幅比・位相差を計算
+        ratio_df, diff_df = compute_ratio_and_diff(
+            indoor_amp_df, outdoor_amp_df,
+            indoor_phase_df, outdoor_phase_df,
+            logger
+        )
+
+        if ratio_df is None:
+            continue
+
+        # CSV出力
+        ratio_path = output_dir / f'ratio_{var_name}_amplitude.csv'
+        diff_path = output_dir / f'diff_{var_name}_phase.csv'
+
+        ratio_df.to_csv(ratio_path, encoding='utf-8-sig')
+        diff_df.to_csv(diff_path, encoding='utf-8-sig')
+
+        logger.info(f"  → {ratio_path.name} ({len(ratio_df.columns)}パターン)")
+        logger.info(f"  → {diff_path.name} ({len(diff_df.columns)}パターン)")
+
+        # Excel用に保存
+        all_dataframes[f'ratio_{var_name}_amp'] = ratio_df
+        all_dataframes[f'diff_{var_name}_phase'] = diff_df
+
+    # =================================================================
     # Excel出力（全シートを1ファイルに）
+    # =================================================================
     if all_dataframes:
         excel_path = output_dir / 'all_spectrums.xlsx'
         with pd.ExcelWriter(excel_path, engine='openpyxl') as writer:
