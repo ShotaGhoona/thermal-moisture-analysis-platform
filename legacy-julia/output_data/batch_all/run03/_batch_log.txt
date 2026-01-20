@@ -12,3 +12,22 @@
 [2026-01-13 15:21:15] 開始: w01-base_o03-high_okinawa
 [2026-01-14 03:41:30] ❌ 失敗: w01-base_o03-high_okinawa - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
 [2026-01-14 03:41:31] 開始: w02-inner_o03-high_okinawa
+[2026-01-15 15:19:24] ════════════════════════════════════════════════════════
+[2026-01-15 15:19:24] 🚀 バッチ実行開始
+[2026-01-15 15:19:24]    総パターン数: 4
+[2026-01-15 15:19:24]    スキップ済み: 0
+[2026-01-15 15:19:24] ════════════════════════════════════════════════════════
+[2026-01-15 15:19:24] 開始: w02-inner_o03-high_sapporo
+[2026-01-16 08:33:33] ❌ 失敗: w02-inner_o03-high_sapporo - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-16 08:33:34] 開始: w03-outer_o03-high_sapporo
+[2026-01-17 10:47:45] ❌ 失敗: w03-outer_o03-high_sapporo - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-17 10:47:45] 開始: w04-hygro_o03-high_sapporo
+[2026-01-18 14:03:31] ❌ 失敗: w04-hygro_o03-high_sapporo - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-18 14:03:31] 開始: w05-mud_o03-high_sapporo
+[2026-01-18 21:55:49] ❌ 失敗: w05-mud_o03-high_sapporo - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-18 21:55:49] ════════════════════════════════════════════════════════
+[2026-01-18 21:55:49] 🎉 バッチ実行完了
+[2026-01-18 21:55:49]    総時間: 78時間36分
+[2026-01-18 21:55:49]    完了: 0 / 4
+[2026-01-18 21:55:49]    失敗: 4
+[2026-01-18 21:55:49] ════════════════════════════════════════════════════════

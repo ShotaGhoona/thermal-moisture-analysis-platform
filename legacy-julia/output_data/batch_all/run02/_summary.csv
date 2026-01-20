@@ -1,2 +1,6 @@
 case_id,wall_id,wall_name,opening_id,opening_name,climate_id,climate_name,status,duration_sec,start_time,end_time,error_message
 w01-base_o02-low_okinawa,w01-base,RC単体,o02-low,低換気,okinawa,沖縄,FAILED,44884.303,2026-01-13 15:21:02,2026-01-14 03:49:06,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w02-inner_o02-low_sapporo,w02-inner,RC内断熱,o02-low,低換気,sapporo,札幌,FAILED,61854.022,2026-01-15 15:19:19,2026-01-16 08:30:13,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w03-outer_o02-low_sapporo,w03-outer,RC外断熱,o02-low,低換気,sapporo,札幌,FAILED,94734.778,2026-01-16 08:30:14,2026-01-17 10:49:09,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w04-hygro_o02-low_sapporo,w04-hygro,RC内断熱+調湿,o02-low,低換気,sapporo,札幌,FAILED,98305.479,2026-01-17 10:49:09,2026-01-18 14:07:34,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w05-mud_o02-low_sapporo,w05-mud,土壁,o02-low,低換気,sapporo,札幌,FAILED,28130.714,2026-01-18 14:07:34,2026-01-18 21:56:25,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"

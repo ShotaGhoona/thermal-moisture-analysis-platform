@@ -1,0 +1,31 @@
+🚀 ════════════════════════════════════════════════════════
+🚀  計算設定
+🚀 ════════════════════════════════════════════════════════
+
+📊 パターン情報:
+   ├─ ケースID: w05-mud_o03-high_sapporo
+   ├─ 🧱 壁体:   土壁 (w05-mud)
+   ├─ 🚪 換気:   高換気 (o03-high)
+   └─ 🌤️  気候:   札幌 (sapporo)
+
+📄 入力ファイル:
+   ├─ Room:    input_data\building_network_model_production\01\room-condition\01-base-model.csv
+   ├─ Wall:    input_data\building_network_model_production\01\wall-condition\05-mud-wall.csv
+   ├─ Opening: input_data\building_network_model_production\01\opening-condition\03-high-ventilation-model.csv
+   └─ Climate: input_data\building_network_model_production\climate-data\climate_data_sapporo.csv
+
+⏱️  計算条件:
+   ├─ 時間刻み dt: 0.1 hour
+   ├─ 開始時刻: 2022-04-01T00:00:00
+   ├─ 終了時刻: 2023-04-01T00:00:00
+   └─ 出力間隔: 10.0 hour
+
+📍 位置情報:
+   ├─ 都市: 札幌
+   ├─ 経度: 141.347
+   ├─ 緯度: 43.064
+   └─ 標準時経度: 135.0
+
+════════════════════════════════════════════════════════════
+
+⏰ 実行開始: 2026-01-18 14:03:31
