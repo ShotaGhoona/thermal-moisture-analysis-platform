@@ -1,0 +1,6 @@
+case_id,wall_id,wall_name,opening_id,opening_name,climate_id,climate_name,status,duration_sec,start_time,end_time,error_message
+w05-mud_o01-base_kyoto,w05-mud,土壁,o01-base,基準換気,kyoto,京都,FAILED,53313.287,2026-01-15 15:23:54,2026-01-16 06:12:27,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w05-mud_o02-low_kyoto,w05-mud,土壁,o02-low,低換気,kyoto,京都,FAILED,53311.814,2026-01-16 06:12:29,2026-01-16 21:01:01,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w05-mud_o03-high_kyoto,w05-mud,土壁,o03-high,高換気,kyoto,京都,FAILED,53482.966,2026-01-16 21:01:01,2026-01-17 11:52:24,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w05-mud_o04-none_kyoto,w05-mud,土壁,o04-none,無換気,kyoto,京都,FAILED,53709.244,2026-01-17 11:52:24,2026-01-18 02:47:33,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w05-mud_o05-storage_kyoto,w05-mud,土壁,o05-storage,蔵換気,kyoto,京都,FAILED,53566.369,2026-01-18 02:47:33,2026-01-18 17:40:20,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"

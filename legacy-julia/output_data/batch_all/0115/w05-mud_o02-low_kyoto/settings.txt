@@ -1,0 +1,31 @@
+🚀 ════════════════════════════════════════════════════════
+🚀  計算設定
+🚀 ════════════════════════════════════════════════════════
+
+📊 パターン情報:
+   ├─ ケースID: w05-mud_o02-low_kyoto
+   ├─ 🧱 壁体:   土壁 (w05-mud)
+   ├─ 🚪 換気:   低換気 (o02-low)
+   └─ 🌤️  気候:   京都 (kyoto)
+
+📄 入力ファイル:
+   ├─ Room:    input_data\building_network_model_production\01\room-condition\01-base-model.csv
+   ├─ Wall:    input_data\building_network_model_production\01\wall-condition\05-mud-wall.csv
+   ├─ Opening: input_data\building_network_model_production\01\opening-condition\02-low-ventilation-model.csv
+   └─ Climate: input_data\building_network_model_production\climate-data\climate_data_kyoto.csv
+
+⏱️  計算条件:
+   ├─ 時間刻み dt: 0.1 hour
+   ├─ 開始時刻: 2022-04-01T00:00:00
+   ├─ 終了時刻: 2023-04-01T00:00:00
+   └─ 出力間隔: 10.0 hour
+
+📍 位置情報:
+   ├─ 都市: 京都
+   ├─ 経度: 135.768
+   ├─ 緯度: 35.012
+   └─ 標準時経度: 135.0
+
+════════════════════════════════════════════════════════════
+
+⏰ 実行開始: 2026-01-16 06:12:29
