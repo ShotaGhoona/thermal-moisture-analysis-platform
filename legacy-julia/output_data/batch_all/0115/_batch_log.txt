@@ -1,0 +1,21 @@
+[2026-01-15 15:23:54] ════════════════════════════════════════════════════════
+[2026-01-15 15:23:54] 🚀 バッチ実行開始
+[2026-01-15 15:23:54]    総パターン数: 5
+[2026-01-15 15:23:54]    スキップ済み: 0
+[2026-01-15 15:23:54] ════════════════════════════════════════════════════════
+[2026-01-15 15:23:54] 開始: w05-mud_o01-base_kyoto
+[2026-01-16 06:12:28] ❌ 失敗: w05-mud_o01-base_kyoto - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-16 06:12:29] 開始: w05-mud_o02-low_kyoto
+[2026-01-16 21:01:01] ❌ 失敗: w05-mud_o02-low_kyoto - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-16 21:01:01] 開始: w05-mud_o03-high_kyoto
+[2026-01-17 11:52:24] ❌ 失敗: w05-mud_o03-high_kyoto - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-17 11:52:24] 開始: w05-mud_o04-none_kyoto
+[2026-01-18 02:47:33] ❌ 失敗: w05-mud_o04-none_kyoto - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-18 02:47:33] 開始: w05-mud_o05-storage_kyoto
+[2026-01-18 17:40:20] ❌ 失敗: w05-mud_o05-storage_kyoto - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-18 17:40:20] ════════════════════════════════════════════════════════
+[2026-01-18 17:40:20] 🎉 バッチ実行完了
+[2026-01-18 17:40:20]    総時間: 74時間16分
+[2026-01-18 17:40:20]    完了: 0 / 5
+[2026-01-18 17:40:20]    失敗: 5
+[2026-01-18 17:40:20] ════════════════════════════════════════════════════════
