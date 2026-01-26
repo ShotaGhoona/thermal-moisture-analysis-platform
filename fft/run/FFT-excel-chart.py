@@ -25,9 +25,15 @@ from config import CLIMATE_NAMES, OPENING_NAMES
 # 壁材質の表示名
 WALL_NAMES = {
     'w01-base': '基準壁',
+    'w01': 'RC単層',
     'w02-inner': '内断熱',
+    'w02': 'RC内断熱',
     'w03-outer': '外断熱',
+    'w03': 'RC外断熱',
     'w04-hygro': '調湿材',
+    'w04': 'RC内断熱+調湿',
+    'w05-mud': '土壁',
+    'w05': '土壁',
 }
 
 # =============================================================================
@@ -63,9 +69,10 @@ Y_AXIS_TITLE_RATIO = "振幅比 [-]"
 Y_AXIS_TITLE_DIFF = "位相差 [rad]"
 
 # グラフ配置位置（列）
-CHART_COL_ALL = "O"       # 全体
-CHART_COL_WALL = "Z"      # 壁材質別
-CHART_COL_OPENING = "AK"  # 換気量別
+CHART_COL_ALL = "AV"       # 全パターン
+CHART_COL_CLIMATE = "BG"   # 気候別
+CHART_COL_OPENING = "BR"   # 換気量別
+CHART_COL_WALL = "CC"      # 壁材質別
 
 # グラフ配置位置（行間隔）
 CHART_ROW_SPACING = 30
@@ -77,8 +84,8 @@ CHART_ROW_SPACING = 30
 def parse_column_groups(ws):
     """
     列名からグループを動的に生成
-    列名形式: w01-base_o01-base_kyoto
-    Returns: (wall_groups, opening_groups)
+    列名形式: w01_o01_kyoto または w01-base_o01-base_kyoto
+    Returns: (wall_groups, opening_groups, climate_groups)
     """
     max_col = ws.max_column
 
@@ -89,8 +96,8 @@ def parse_column_groups(ws):
         if name:
             parts = name.split('_')
             if len(parts) >= 3:
-                wall = parts[0]      # w01-base
-                opening = parts[1]   # o01-base
+                wall = parts[0]      # w01 or w01-base
+                opening = parts[1]   # o01 or o01-base
                 climate = parts[2]   # kyoto
                 columns_info.append({
                     'col': col,
@@ -116,7 +123,15 @@ def parse_column_groups(ws):
             opening_groups[opening] = []
         opening_groups[opening].append(info['col'])
 
-    return wall_groups, opening_groups
+    # 気候別グループ（同じ気候の列をまとめる）
+    climate_groups = {}
+    for info in columns_info:
+        climate = info['climate']
+        if climate not in climate_groups:
+            climate_groups[climate] = []
+        climate_groups[climate].append(info['col'])
+
+    return wall_groups, opening_groups, climate_groups
 
 # =============================================================================
 # 関数
@@ -197,9 +212,9 @@ def add_chart_to_sheet(ws, sheet_name: str, simple: bool = False):
     if ws.cell(row=max_row, column=2).value is None:
         max_row -= 1
 
-    # === 1列目: 全体 ===
+    # === 1列目: 全パターン ===
     all_cols = list(range(2, max_col + 1))
-    chart_all = create_chart(ws, sheet_name, all_cols, "(全体)", max_row)
+    chart_all = create_chart(ws, sheet_name, all_cols, "(全パターン)", max_row)
     ws.add_chart(chart_all, f"{CHART_COL_ALL}2")
 
     # simpleモードの場合は全体グラフのみ
@@ -207,29 +222,37 @@ def add_chart_to_sheet(ws, sheet_name: str, simple: bool = False):
         return True
 
     # 列名からグループを動的に生成
-    wall_groups, opening_groups = parse_column_groups(ws)
+    wall_groups, opening_groups, climate_groups = parse_column_groups(ws)
 
-    # === 2列目: 壁材質別グラフ（換気量比較用） ===
-    # 壁材質が複数ある場合のみ生成
-    if len(wall_groups) > 1:
-        for i, (wall_key, cols) in enumerate(wall_groups.items()):
-            if len(cols) < 2:
+    # === 2列目: 気候別グラフ ===
+    if len(climate_groups) > 0:
+        for i, (climate_key, cols) in enumerate(sorted(climate_groups.items())):
+            if len(cols) < 1:
                 continue
-            wall_name = WALL_NAMES.get(wall_key, wall_key)
+            climate_name = CLIMATE_NAMES.get(climate_key, climate_key)
             row = 2 + i * CHART_ROW_SPACING
-            chart = create_chart(ws, sheet_name, cols, f"({wall_name})", max_row)
-            ws.add_chart(chart, f"{CHART_COL_WALL}{row}")
+            chart = create_chart(ws, sheet_name, cols, f"({climate_name})", max_row)
+            ws.add_chart(chart, f"{CHART_COL_CLIMATE}{row}")
 
-    # === 3列目: 換気量別グラフ（壁材質比較用） ===
-    # 換気量が複数ある場合のみ生成
-    if len(opening_groups) > 1:
-        for i, (opening_key, cols) in enumerate(opening_groups.items()):
-            if len(cols) < 2:
+    # === 3列目: 換気量別グラフ ===
+    if len(opening_groups) > 0:
+        for i, (opening_key, cols) in enumerate(sorted(opening_groups.items())):
+            if len(cols) < 1:
                 continue
             opening_name = OPENING_NAMES.get(opening_key, opening_key)
             row = 2 + i * CHART_ROW_SPACING
             chart = create_chart(ws, sheet_name, cols, f"({opening_name})", max_row)
             ws.add_chart(chart, f"{CHART_COL_OPENING}{row}")
+
+    # === 4列目: 壁材質別グラフ ===
+    if len(wall_groups) > 0:
+        for i, (wall_key, cols) in enumerate(sorted(wall_groups.items())):
+            if len(cols) < 1:
+                continue
+            wall_name = WALL_NAMES.get(wall_key, wall_key)
+            row = 2 + i * CHART_ROW_SPACING
+            chart = create_chart(ws, sheet_name, cols, f"({wall_name})", max_row)
+            ws.add_chart(chart, f"{CHART_COL_WALL}{row}")
 
     return True
 

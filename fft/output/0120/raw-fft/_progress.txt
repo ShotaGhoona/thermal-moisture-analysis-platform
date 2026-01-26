@@ -1,0 +1,48 @@
+FFT一括解析完了
+解析日時: 2026-01-20 13:08:52
+入力: data/julia
+出力: fft/output/0120/raw-fft
+ケース数: 40
+成功: 40
+
+各ケース:
+  ✓ w01_o01_kyoto
+  ✓ w01_o02_kyoto
+  ✓ w01_o03_kyoto
+  ✓ w01_o04_kyoto
+  ✓ w01_o05_kyoto
+  ✓ w02_o01_kyoto
+  ✓ w02_o02_kyoto
+  ✓ w02_o03_kyoto
+  ✓ w02_o04_kyoto
+  ✓ w02_o05_kyoto
+  ✓ w04_o01_kyoto
+  ✓ w04_o02_kyoto
+  ✓ w04_o03_kyoto
+  ✓ w04_o04_kyoto
+  ✓ w04_o05_kyoto
+  ✓ w05_o01_kyoto
+  ✓ w05_o02_kyoto
+  ✓ w05_o03_kyoto
+  ✓ w05_o04_kyoto
+  ✓ w05_o05_kyoto
+  ✓ w01_o01_okinawa
+  ✓ w01_o02_okinawa
+  ✓ w01_o03_okinawa
+  ✓ w01_o04_okinawa
+  ✓ w01_o05_okinawa
+  ✓ w02_o01_sapporo
+  ✓ w02_o02_sapporo
+  ✓ w02_o03_sapporo
+  ✓ w02_o04_sapporo
+  ✓ w02_o05_sapporo
+  ✓ w04_o01_sapporo
+  ✓ w04_o02_sapporo
+  ✓ w04_o03_sapporo
+  ✓ w04_o04_sapporo
+  ✓ w04_o05_sapporo
+  ✓ w05_o01_sapporo
+  ✓ w05_o02_sapporo
+  ✓ w05_o03_sapporo
+  ✓ w05_o04_sapporo
+  ✓ w05_o05_sapporo

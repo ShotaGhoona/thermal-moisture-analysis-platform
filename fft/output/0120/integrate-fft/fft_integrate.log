@@ -1,0 +1,40 @@
+2026-01-20 13:09:58,947 - INFO - ============================================================
+2026-01-20 13:09:58,947 - INFO - FFT統合開始
+2026-01-20 13:09:58,947 - INFO - 入力: fft/output/0120/binned-fft
+2026-01-20 13:09:58,947 - INFO - 出力: fft/output/0120/integrate-fft
+2026-01-20 13:09:58,947 - INFO - ============================================================
+2026-01-20 13:09:58,947 - INFO - 検出ケース数: 40
+2026-01-20 13:09:58,947 - INFO - 統合中: spectrum_room1_temp
+2026-01-20 13:09:58,970 - INFO -   → spectrum_room1_temp_amplitude.csv (40パターン)
+2026-01-20 13:09:58,970 - INFO -   → spectrum_room1_temp_phase.csv (40パターン)
+2026-01-20 13:09:58,970 - INFO - 統合中: spectrum_room1_rh
+2026-01-20 13:09:58,989 - INFO -   → spectrum_room1_rh_amplitude.csv (40パターン)
+2026-01-20 13:09:58,989 - INFO -   → spectrum_room1_rh_phase.csv (40パターン)
+2026-01-20 13:09:58,990 - INFO - 統合中: spectrum_room1_ah
+2026-01-20 13:09:59,011 - INFO -   → spectrum_room1_ah_amplitude.csv (40パターン)
+2026-01-20 13:09:59,011 - INFO -   → spectrum_room1_ah_phase.csv (40パターン)
+2026-01-20 13:09:59,011 - INFO - 統合中: spectrum_room2_temp
+2026-01-20 13:09:59,031 - INFO -   → spectrum_room2_temp_amplitude.csv (40パターン)
+2026-01-20 13:09:59,031 - INFO -   → spectrum_room2_temp_phase.csv (40パターン)
+2026-01-20 13:09:59,031 - INFO - 統合中: spectrum_room2_rh
+2026-01-20 13:09:59,051 - INFO -   → spectrum_room2_rh_amplitude.csv (40パターン)
+2026-01-20 13:09:59,051 - INFO -   → spectrum_room2_rh_phase.csv (40パターン)
+2026-01-20 13:09:59,051 - INFO - 統合中: spectrum_room2_ah
+2026-01-20 13:09:59,071 - INFO -   → spectrum_room2_ah_amplitude.csv (40パターン)
+2026-01-20 13:09:59,071 - INFO -   → spectrum_room2_ah_phase.csv (40パターン)
+2026-01-20 13:09:59,071 - INFO - ------------------------------------------------------------
+2026-01-20 13:09:59,071 - INFO - 振幅比・位相差の計算
+2026-01-20 13:09:59,071 - INFO - 計算中: temp (室内/外気)
+2026-01-20 13:09:59,075 - INFO -   → ratio_temp_amplitude.csv (40パターン)
+2026-01-20 13:09:59,075 - INFO -   → diff_temp_phase.csv (40パターン)
+2026-01-20 13:09:59,075 - INFO - 計算中: rh (室内/外気)
+2026-01-20 13:09:59,077 - INFO -   → ratio_rh_amplitude.csv (40パターン)
+2026-01-20 13:09:59,077 - INFO -   → diff_rh_phase.csv (40パターン)
+2026-01-20 13:09:59,077 - INFO - 計算中: ah (室内/外気)
+2026-01-20 13:09:59,078 - INFO -   → ratio_ah_amplitude.csv (40パターン)
+2026-01-20 13:09:59,078 - INFO -   → diff_ah_phase.csv (40パターン)
+2026-01-20 13:09:59,341 - INFO - Excel出力: all_spectrums.xlsx (18シート)
+2026-01-20 13:09:59,341 - INFO - ============================================================
+2026-01-20 13:09:59,341 - INFO - FFT統合完了
+2026-01-20 13:09:59,341 - INFO - 出力: fft/output/0120/integrate-fft
+2026-01-20 13:09:59,341 - INFO - ============================================================

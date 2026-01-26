@@ -83,18 +83,52 @@ class FFTBatchAnalyzer:
         self.case_results = {}
 
     def find_case_directories(self) -> list:
-        """解析対象のケースディレクトリを検索"""
+        """解析対象のケースディレクトリを検索
+
+        対応する構造:
+        1. 従来形式: batch_dir/w01-base_o01-base_kyoto/result_all_rooms.csv
+        2. data/julia形式: batch_dir/{climate}/{wall}/{opening}/result_all_rooms.csv
+        3. 単一ディレクトリ: batch_dir/result_all_rooms.csv
+        """
         cases = []
 
+        # 単一ディレクトリの場合（直接CSVがある）
+        if (self.batch_dir / 'result_all_rooms.csv').exists():
+            cases.append(self.batch_dir)
+            self.logger.info(f"単一ディレクトリモード: {self.batch_dir.name}")
+            return cases
+
+        # 従来形式: w*で始まるディレクトリ
         for d in sorted(self.batch_dir.iterdir()):
             if d.is_dir() and d.name.startswith('w'):
                 csv_file = d / 'result_all_rooms.csv'
                 if csv_file.exists():
                     cases.append(d)
-                else:
-                    self.logger.warning(f"CSVファイルなし: {d.name}")
 
-        self.logger.info(f"検出ケース数: {len(cases)}")
+        # 従来形式で見つかった場合
+        if cases:
+            self.logger.info(f"従来形式で検出: {len(cases)}ケース")
+            return cases
+
+        # data/julia形式: {climate}/{wall}/{opening} 構造を探索
+        for climate_dir in sorted(self.batch_dir.iterdir()):
+            if not climate_dir.is_dir():
+                continue
+            for wall_dir in sorted(climate_dir.iterdir()):
+                if not wall_dir.is_dir():
+                    continue
+                for opening_dir in sorted(wall_dir.iterdir()):
+                    if not opening_dir.is_dir():
+                        continue
+                    csv_file = opening_dir / 'result_all_rooms.csv'
+                    if csv_file.exists():
+                        cases.append(opening_dir)
+
+        if cases:
+            self.logger.info(f"data/julia形式で検出: {len(cases)}ケース")
+        else:
+            self.logger.warning("解析対象のケースが見つかりません")
+
         return cases
 
     def load_simulation_data(self, case_dir: Path) -> dict:
@@ -201,9 +235,35 @@ class FFTBatchAnalyzer:
 
         return features
 
+    def _extract_case_info(self, case_dir: Path) -> tuple:
+        """ケースディレクトリからケース名とパラメータを抽出
+
+        対応形式:
+        1. 従来形式: w01-base_o01-base_kyoto
+        2. data/julia形式: kyoto/w01/o01 -> w01_o01_kyoto
+        """
+        dir_name = case_dir.name
+
+        # 従来形式: w*で始まる場合
+        if dir_name.startswith('w'):
+            parts = dir_name.split('_')
+            wall_type = parts[0] if len(parts) > 0 else ''
+            opening_type = parts[1] if len(parts) > 1 else ''
+            climate = parts[2] if len(parts) > 2 else ''
+            return dir_name, wall_type, opening_type, climate
+
+        # data/julia形式: opening/wall/climate の構造
+        # case_dir: .../data/julia/{climate}/{wall}/{opening}
+        opening = case_dir.name  # o01
+        wall = case_dir.parent.name  # w01
+        climate = case_dir.parent.parent.name  # kyoto
+
+        case_name = f"{wall}_{opening}_{climate}"
+        return case_name, wall, opening, climate
+
     def analyze_single_case(self, case_dir: Path) -> dict:
         """単一ケースの解析"""
-        case_name = case_dir.name
+        case_name, wall_type, opening_type, climate = self._extract_case_info(case_dir)
         self.logger.info(f"解析開始: {case_name}")
 
         try:
@@ -218,11 +278,9 @@ class FFTBatchAnalyzer:
                 'data_points': len(data['room1']['temp']),
             }
 
-            # ケース名からパラメータを抽出 (w01-base_o01-base_kyoto)
-            parts = case_name.split('_')
-            result['wall_type'] = parts[0] if len(parts) > 0 else ''
-            result['opening_type'] = parts[1] if len(parts) > 1 else ''
-            result['climate'] = parts[2] if len(parts) > 2 else ''
+            result['wall_type'] = wall_type
+            result['opening_type'] = opening_type
+            result['climate'] = climate
 
             # 各室・各変数のFFT解析
             fft_results = {}

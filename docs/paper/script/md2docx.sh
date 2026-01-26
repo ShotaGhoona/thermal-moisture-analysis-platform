@@ -46,6 +46,7 @@ pandoc "${MD_FILES[@]}" \
     --from markdown \
     --to docx \
     --reference-doc="$REFERENCE_DOCX" \
+    --resource-path="$SPLITS_DIR" \
     --number-sections
 
 if [ $? -eq 0 ]; then
