@@ -1,0 +1,26 @@
+🚨 エラー発生
+
+⏰ 発生時刻: 2026-01-20 21:11:10
+
+📝 エラーメッセージ:
+BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+
+📋 スタックトレース:
+BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+Stacktrace:
+ [1] getindex(A::Vector{Float64}, i1::Int64)
+   @ Base .\essentials.jl:13
+ [2] reset_climate_data(climate::Climate)
+   @ Main C:\Users\ogura\OneDrive\Desktop\yamashita2026\thermal-moisture-analysis-platform\legacy-julia\module\climate.jl:260
+ [3] run_single_simulation(wall::@NamedTuple{id::String, file::String, name::String}, opening::@NamedTuple{id::String, file::String, name::String}, climate::@NamedTuple{id::String, file::String, name::String, lon::Float64, phi::Float64}, output_dir::String, case_idx::Int64, total::Int64)
+   @ Main C:\Users\ogura\OneDrive\Desktop\yamashita2026\thermal-moisture-analysis-platform\legacy-julia\run\main-all-git-o02.jl:561
+ [4] main()
+   @ Main C:\Users\ogura\OneDrive\Desktop\yamashita2026\thermal-moisture-analysis-platform\legacy-julia\run\main-all-git-o02.jl:887
+ [5] top-level scope
+   @ C:\Users\ogura\OneDrive\Desktop\yamashita2026\thermal-moisture-analysis-platform\legacy-julia\run\main-all-git-o02.jl:1005
+ [6] include(mod::Module, _path::String)
+   @ Base .\Base.jl:495
+ [7] exec_options(opts::Base.JLOptions)
+   @ Base .\client.jl:318
+ [8] _start()
+   @ Base .\client.jl:552
