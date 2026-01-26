@@ -1,0 +1,31 @@
+🚀 ════════════════════════════════════════════════════════
+🚀  計算設定
+🚀 ════════════════════════════════════════════════════════
+
+📊 パターン情報:
+   ├─ ケースID: w04-hygro_o04-none_okinawa
+   ├─ 🧱 壁体:   RC内断熱+調湿 (w04-hygro)
+   ├─ 🚪 換気:   無換気 (o04-none)
+   └─ 🌤️  気候:   沖縄 (okinawa)
+
+📄 入力ファイル:
+   ├─ Room:    input_data\building_network_model_production\01\room-condition\01-base-model.csv
+   ├─ Wall:    input_data\building_network_model_production\01\wall-condition\04-rc-inner-insulation-hygroscopic.csv
+   ├─ Opening: input_data\building_network_model_production\01\opening-condition\04-no-ventilation-model.csv
+   └─ Climate: input_data\building_network_model_production\climate-data\climate_data_okinawa.csv
+
+⏱️  計算条件:
+   ├─ 時間刻み dt: 0.1 hour
+   ├─ 開始時刻: 2022-04-01T00:00:00
+   ├─ 終了時刻: 2023-04-01T00:00:00
+   └─ 出力間隔: 10.0 hour
+
+📍 位置情報:
+   ├─ 都市: 沖縄
+   ├─ 経度: 127.681
+   ├─ 緯度: 26.212
+   └─ 標準時経度: 135.0
+
+════════════════════════════════════════════════════════════
+
+⏰ 実行開始: 2026-01-24 01:09:48
