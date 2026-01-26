@@ -4,3 +4,8 @@ w02-inner_o03-high_sapporo,w02-inner,RC内断熱,o03-high,高換気,sapporo,札�
 w03-outer_o03-high_sapporo,w03-outer,RC外断熱,o03-high,高換気,sapporo,札幌,FAILED,94451.164,2026-01-16 08:33:34,2026-01-17 10:47:45,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
 w04-hygro_o03-high_sapporo,w04-hygro,RC内断熱+調湿,o03-high,高換気,sapporo,札幌,FAILED,98146.309,2026-01-17 10:47:45,2026-01-18 14:03:31,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
 w05-mud_o03-high_sapporo,w05-mud,土壁,o03-high,高換気,sapporo,札幌,FAILED,28337.469,2026-01-18 14:03:31,2026-01-18 21:55:49,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w02-inner_o01-base_okinawa,w02-inner,RC内断熱,o01-base,基準換気,okinawa,沖縄,FAILED,62880.372,2026-01-20 13:06:47,2026-01-21 06:34:47,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w02-inner_o02-low_okinawa,w02-inner,RC内断熱,o02-low,低換気,okinawa,沖縄,FAILED,62892.152,2026-01-21 06:34:49,2026-01-22 00:03:01,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w02-inner_o03-high_okinawa,w02-inner,RC内断熱,o03-high,高換気,okinawa,沖縄,FAILED,61137.106,2026-01-22 00:03:01,2026-01-22 17:01:58,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w02-inner_o04-none_okinawa,w02-inner,RC内断熱,o04-none,無換気,okinawa,沖縄,FAILED,60393.852,2026-01-22 17:01:58,2026-01-23 09:48:32,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w02-inner_o05-storage_okinawa,w02-inner,RC内断熱,o05-storage,蔵換気,okinawa,沖縄,FAILED,78813.406,2026-01-23 09:48:32,2026-01-24 07:42:05,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"

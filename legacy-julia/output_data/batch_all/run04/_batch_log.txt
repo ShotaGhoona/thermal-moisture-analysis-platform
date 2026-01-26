@@ -31,3 +31,17 @@
 [2026-01-18 21:42:30]    完了: 0 / 4
 [2026-01-18 21:42:30]    失敗: 4
 [2026-01-18 21:42:30] ════════════════════════════════════════════════════════
+[2026-01-20 13:06:52] ════════════════════════════════════════════════════════
+[2026-01-20 13:06:52] 🚀 バッチ実行開始
+[2026-01-20 13:06:52]    総パターン数: 5
+[2026-01-20 13:06:52]    スキップ済み: 0
+[2026-01-20 13:06:52] ════════════════════════════════════════════════════════
+[2026-01-20 13:06:52] 開始: w04-hygro_o01-base_okinawa
+[2026-01-21 16:39:26] ❌ 失敗: w04-hygro_o01-base_okinawa - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-21 16:39:27] 開始: w04-hygro_o02-low_okinawa
+[2026-01-22 19:40:27] ❌ 失敗: w04-hygro_o02-low_okinawa - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-22 19:40:27] 開始: w04-hygro_o03-high_okinawa
+[2026-01-24 01:09:48] ❌ 失敗: w04-hygro_o03-high_okinawa - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-24 01:09:48] 開始: w04-hygro_o04-none_okinawa
+[2026-01-25 07:17:06] ❌ 失敗: w04-hygro_o04-none_okinawa - BoundsError: attempt to access 0-element Vector{Float64} at index [1]
+[2026-01-25 07:17:06] 開始: w04-hygro_o05-storage_okinawa

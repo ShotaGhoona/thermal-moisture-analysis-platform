@@ -4,3 +4,8 @@ w02-inner_o01-base_sapporo,w02-inner,RC内断熱,o01-base,基準換気,sapporo,�
 w03-outer_o01-base_sapporo,w03-outer,RC外断熱,o01-base,基準換気,sapporo,札幌,FAILED,94268.176,2026-01-16 08:28:27,2026-01-17 10:39:35,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
 w04-hygro_o01-base_sapporo,w04-hygro,RC内断熱+調湿,o01-base,基準換気,sapporo,札幌,FAILED,97931.366,2026-01-17 10:39:35,2026-01-18 13:51:46,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
 w05-mud_o01-base_sapporo,w05-mud,土壁,o01-base,基準換気,sapporo,札幌,FAILED,28228.453,2026-01-18 13:51:46,2026-01-18 21:42:15,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w01-base_o01-base_sapporo,w01-base,RC単体,o01-base,基準換気,sapporo,札幌,FAILED,29098.383,2026-01-20 12:57:26,2026-01-20 21:02:24,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w01-base_o02-low_sapporo,w01-base,RC単体,o02-low,低換気,sapporo,札幌,FAILED,28939.378,2026-01-20 21:02:25,2026-01-21 05:04:45,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w01-base_o03-high_sapporo,w01-base,RC単体,o03-high,高換気,sapporo,札幌,FAILED,29028.09,2026-01-21 05:04:45,2026-01-21 13:08:33,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w01-base_o04-none_sapporo,w01-base,RC単体,o04-none,無換気,sapporo,札幌,FAILED,29100.487,2026-01-21 13:08:33,2026-01-21 21:13:33,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
+w01-base_o05-storage_sapporo,w01-base,RC単体,o05-storage,蔵換気,sapporo,札幌,FAILED,29047.314,2026-01-21 21:13:33,2026-01-22 05:17:41,"BoundsError: attempt to access 0-element Vector{Float64} at index [1]"
