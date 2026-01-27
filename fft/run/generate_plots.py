@@ -25,11 +25,11 @@ matplotlib.rcParams['axes.unicode_minus'] = False
 
 # データディレクトリ（相対パス）
 # fft/run → parent = fft
-DATA_DIR = Path(__file__).parent.parent / "output" / "0120" / "integrate-fft"
+DATA_DIR = Path(__file__).parent.parent / "output" / "0126" / "integrate-fft"
 
 # 出力ディレクトリ
-# fft/run → ../../docs/paper/source/0121
-OUTPUT_DIR = Path(__file__).parent.parent.parent / "docs" / "paper" / "source" / "0121"
+# fft/run → ../../docs/paper/source/ratio-ah
+OUTPUT_DIR = Path(__file__).parent.parent.parent / "docs" / "paper" / "source" / "ratio-rh"
 
 # 図のサイズ・DPI
 FIGURE_SIZE = (10, 6)
@@ -68,62 +68,124 @@ FIGURE_DPI = 300
 #   ファイル名は最初の呪文に "_multi" を付けたものになる
 
 PLOTS = [
-    # ==========================================================================
-    # Step 1: 位相差の全体像を把握
-    # ==========================================================================
-    "diff_temp",      # 全パターンの温度位相差
-    "diff_ah",        # 全パターンの絶対湿度位相差
-    "diff_rh",        # 全パターンの相対湿度位相差
+    # RC内断熱（w02）のみ、全換気量×全気候を1枚に
+    "ratio_rh@w02",
 
-    # ==========================================================================
-    # Step 2: 条件を絞って詳細分析
-    # ==========================================================================
-    "diff_temp@o04",  # 無換気条件（壁体のみの効果）
-    "diff_temp@w05",  # 土壁のみ（換気量の影響）
-    "diff_ah@o04",    # 無換気・絶対湿度
+    # # ==========================================================================
+    # # 2フィルター版: 換気量ごとに全壁構造をまとめたグラフ
+    # # ==========================================================================
+    # ["ratio_temp@o01@w01", "ratio_temp@o01@w02", "ratio_temp@o01@w04", "ratio_temp@o01@w05"],
+    # ["ratio_temp@o02@w01", "ratio_temp@o02@w02", "ratio_temp@o02@w04", "ratio_temp@o02@w05"],
+    # ["ratio_temp@o03@w01", "ratio_temp@o03@w02", "ratio_temp@o03@w04", "ratio_temp@o03@w05"],
+    # ["ratio_temp@o04@w01", "ratio_temp@o04@w02", "ratio_temp@o04@w04", "ratio_temp@o04@w05"],
+    # ["ratio_temp@o05@w01", "ratio_temp@o05@w02", "ratio_temp@o05@w04", "ratio_temp@o05@w05"],
 
-    # ==========================================================================
-    # Step 3: 未探索の振幅比パターン
-    # ==========================================================================
-    "ratio_ah@o04",   # 無換気・絶対湿度
-    "ratio_temp@w05", # 土壁のみ
+    # # ==========================================================================
+    # # 壁構造ごとに全換気量・全地域をまとめたグラフ（既存）
+    # # ==========================================================================
+    # ["ratio_temp@w01@o01", "ratio_temp@w01@o02", "ratio_temp@w01@o03", "ratio_temp@w01@o04", "ratio_temp@w01@o05"],
+    # ["ratio_temp@w02@o01", "ratio_temp@w02@o02", "ratio_temp@w02@o03", "ratio_temp@w02@o04", "ratio_temp@w02@o05"],
+    # ["ratio_temp@w04@o01", "ratio_temp@w04@o02", "ratio_temp@w04@o03", "ratio_temp@w04@o04", "ratio_temp@w04@o05"],
+    # ["ratio_temp@w05@o01", "ratio_temp@w05@o02", "ratio_temp@w05@o03", "ratio_temp@w05@o04", "ratio_temp@w05@o05"],
 
-    # ==========================================================================
-    # Step 4: 地域比較（7.3節用）
-    # ==========================================================================
-    ["diff_temp@kyoto@o04", "diff_temp@okinawa@o04", "diff_temp@sapporo@o04"],
-    ["ratio_temp@kyoto@o04", "ratio_temp@okinawa@o04", "ratio_temp@sapporo@o04"],
+    # # ==========================================================================
+    # # Step 1: 位相差の全体像を把握
+    # # ==========================================================================
+    # "diff_temp",      # 全パターンの温度位相差
+    # "diff_ah",        # 全パターンの絶対湿度位相差
+    # "diff_rh",        # 全パターンの相対湿度位相差
 
-    # ==========================================================================
-    # Step 5: 追加探索
-    # ==========================================================================
-    # RC内断熱 vs RC内断熱+調湿 比較
-    ["ratio_temp@w02", "ratio_temp@w04"],
-    ["diff_temp@w02", "diff_temp@w04"],
-    # 相対湿度の位相差（調湿材効果）
-    ["diff_rh@w02@o04", "diff_rh@w04@o04", "diff_rh@w05@o04"],
+    # # ==========================================================================
+    # # Step 2: 条件を絞って詳細分析
+    # # ==========================================================================
+    # "diff_temp@o04",  # 無換気条件（壁体のみの効果）
+    # "diff_temp@w05",  # 土壁のみ（換気量の影響）
+    # "diff_ah@o04",    # 無換気・絶対湿度
 
-    # ==========================================================================
-    # Step 6: 地域比較（同一壁構造）
-    # ==========================================================================
-    ["ratio_temp@w02@kyoto", "ratio_temp@w02@sapporo"],
-    ["ratio_ah@w02@kyoto", "ratio_ah@w02@sapporo"],
+    # # ==========================================================================
+    # # Step 3: 未探索の振幅比パターン
+    # # ==========================================================================
+    # "ratio_ah@o04",   # 無換気・絶対湿度
+    # "ratio_temp@w05", # 土壁のみ
 
-    # ==========================================================================
-    # Step 7: 換気量の影響（壁構造別）
-    # ==========================================================================
-    ["ratio_temp@w01@o01", "ratio_temp@w01@o02", "ratio_temp@w01@o03", "ratio_temp@w01@o04", "ratio_temp@w01@o05"],
-    ["ratio_temp@w02@o01", "ratio_temp@w02@o02", "ratio_temp@w02@o03", "ratio_temp@w02@o04", "ratio_temp@w02@o05"],
-    ["ratio_ah@w01@o01", "ratio_ah@w01@o02", "ratio_ah@w01@o03", "ratio_ah@w01@o04", "ratio_ah@w01@o05"],
-    ["ratio_ah@w02@o01", "ratio_ah@w02@o02", "ratio_ah@w02@o03", "ratio_ah@w02@o04", "ratio_ah@w02@o05"],
+    # # ==========================================================================
+    # # Step 4: 地域比較（7.3節用）
+    # # ==========================================================================
+    # ["diff_temp@kyoto@o04", "diff_temp@okinawa@o04", "diff_temp@sapporo@o04"],
+    # ["ratio_temp@kyoto@o04", "ratio_temp@okinawa@o04", "ratio_temp@sapporo@o04"],
 
-    # RC単層の特徴（沖縄データあり）
-    "ratio_temp@w01",
-    "ratio_ah@w01",
-    "diff_temp@w01",
+    # # ==========================================================================
+    # # Step 5: 追加探索
+    # # ==========================================================================
+    # # RC内断熱 vs RC内断熱+調湿 比較
+    # ["ratio_temp@w02", "ratio_temp@w04"],
+    # ["diff_temp@w02", "diff_temp@w04"],
+    # # 相対湿度の位相差（調湿材効果）
+    # ["diff_rh@w02@o04", "diff_rh@w04@o04", "diff_rh@w05@o04"],
 
-    # 相対湿度振幅比
-    ["ratio_rh@w01", "ratio_rh@w02", "ratio_rh@w04", "ratio_rh@w05"],
+    # # ==========================================================================
+    # # Step 6: 地域比較（同一壁構造）
+    # # ==========================================================================
+    # ["ratio_temp@w02@kyoto", "ratio_temp@w02@sapporo"],
+    # ["ratio_ah@w02@kyoto", "ratio_ah@w02@sapporo"],
+
+    # # ==========================================================================
+    # # Step 7: 換気量の影響（壁構造別）
+    # # ==========================================================================
+    # ["ratio_temp@w01@o01", "ratio_temp@w01@o02", "ratio_temp@w01@o03", "ratio_temp@w01@o04", "ratio_temp@w01@o05"],
+    # ["ratio_temp@w02@o01", "ratio_temp@w02@o02", "ratio_temp@w02@o03", "ratio_temp@w02@o04", "ratio_temp@w02@o05"],
+    # ["ratio_ah@w01@o01", "ratio_ah@w01@o02", "ratio_ah@w01@o03", "ratio_ah@w01@o04", "ratio_ah@w01@o05"],
+    # ["ratio_ah@w02@o01", "ratio_ah@w02@o02", "ratio_ah@w02@o03", "ratio_ah@w02@o04", "ratio_ah@w02@o05"],
+
+    # # RC単層の特徴（沖縄データあり）
+    # "ratio_temp@w01",
+    # "ratio_ah@w01",
+    # "diff_temp@w01",
+
+    # # 相対湿度振幅比
+    # ["ratio_rh@w01", "ratio_rh@w02", "ratio_rh@w04", "ratio_rh@w05"],
+
+    # # ==========================================================================
+    # # 6章用: 地域別・壁構造別・換気量別グラフ
+    # # ==========================================================================
+    # # 外気温度振幅（地域別）
+    # ["room1_temp_amp@kyoto", "room1_temp_amp@okinawa", "room1_temp_amp@sapporo"],
+
+    # # 温度振幅比（京都）
+    # ["ratio_temp@kyoto@w01", "ratio_temp@kyoto@w02", "ratio_temp@kyoto@w04", "ratio_temp@kyoto@w05"],
+    # ["ratio_temp@kyoto@o01", "ratio_temp@kyoto@o02", "ratio_temp@kyoto@o03", "ratio_temp@kyoto@o04", "ratio_temp@kyoto@o05"],
+    # # 温度振幅比（沖縄）
+    # ["ratio_temp@okinawa@w01", "ratio_temp@okinawa@w02", "ratio_temp@okinawa@w04", "ratio_temp@okinawa@w05"],
+    # ["ratio_temp@okinawa@o01", "ratio_temp@okinawa@o02", "ratio_temp@okinawa@o03", "ratio_temp@okinawa@o04", "ratio_temp@okinawa@o05"],
+    # # 温度振幅比（札幌）
+    # ["ratio_temp@sapporo@w01", "ratio_temp@sapporo@w02", "ratio_temp@sapporo@w04", "ratio_temp@sapporo@w05"],
+    # ["ratio_temp@sapporo@o01", "ratio_temp@sapporo@o02", "ratio_temp@sapporo@o03", "ratio_temp@sapporo@o04", "ratio_temp@sapporo@o05"],
+
+    # # 相対湿度振幅比（京都）
+    # ["ratio_rh@kyoto@w01", "ratio_rh@kyoto@w02", "ratio_rh@kyoto@w04", "ratio_rh@kyoto@w05"],
+    # ["ratio_rh@kyoto@o01", "ratio_rh@kyoto@o02", "ratio_rh@kyoto@o03", "ratio_rh@kyoto@o04", "ratio_rh@kyoto@o05"],
+    # # 相対湿度振幅比（沖縄）
+    # ["ratio_rh@okinawa@w01", "ratio_rh@okinawa@w02", "ratio_rh@okinawa@w04", "ratio_rh@okinawa@w05"],
+    # ["ratio_rh@okinawa@o01", "ratio_rh@okinawa@o02", "ratio_rh@okinawa@o03", "ratio_rh@okinawa@o04", "ratio_rh@okinawa@o05"],
+    # # 相対湿度振幅比（札幌）
+    # ["ratio_rh@sapporo@w01", "ratio_rh@sapporo@w02", "ratio_rh@sapporo@w04", "ratio_rh@sapporo@w05"],
+    # ["ratio_rh@sapporo@o01", "ratio_rh@sapporo@o02", "ratio_rh@sapporo@o03", "ratio_rh@sapporo@o04", "ratio_rh@sapporo@o05"],
+
+    # # 絶対湿度振幅比（京都）
+    # ["ratio_ah@kyoto@w01", "ratio_ah@kyoto@w02", "ratio_ah@kyoto@w04", "ratio_ah@kyoto@w05"],
+    # ["ratio_ah@kyoto@o01", "ratio_ah@kyoto@o02", "ratio_ah@kyoto@o03", "ratio_ah@kyoto@o04", "ratio_ah@kyoto@o05"],
+    # # 絶対湿度振幅比（沖縄）
+    # ["ratio_ah@okinawa@w01", "ratio_ah@okinawa@w02", "ratio_ah@okinawa@w04", "ratio_ah@okinawa@w05"],
+    # ["ratio_ah@okinawa@o01", "ratio_ah@okinawa@o02", "ratio_ah@okinawa@o03", "ratio_ah@okinawa@o04", "ratio_ah@okinawa@o05"],
+    # # 絶対湿度振幅比（札幌）
+    # ["ratio_ah@sapporo@w01", "ratio_ah@sapporo@w02", "ratio_ah@sapporo@w04", "ratio_ah@sapporo@w05"],
+    # ["ratio_ah@sapporo@o01", "ratio_ah@sapporo@o02", "ratio_ah@sapporo@o03", "ratio_ah@sapporo@o04", "ratio_ah@sapporo@o05"],
+
+    # # ==========================================================================
+    # # 7章用: 無換気条件
+    # # ==========================================================================
+    # "ratio_rh@o04",   # 相対湿度振幅比（無換気条件）
+    # "ratio_temp@o04", # 温度振幅比（無換気条件）
 ]
 
 # =============================================================================
